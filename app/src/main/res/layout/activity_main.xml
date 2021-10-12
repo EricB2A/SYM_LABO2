@@ -15,6 +15,12 @@
         android:gravity="center">
 
         <Button
+            android:id="@+id/button_async"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/main_btn_async" />
+
+        <Button
             android:id="@+id/button_def"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -37,12 +43,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/main_btn_graphql" />
-
-        <Button
-            android:id="@+id/button_async"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/main_btn_async" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
