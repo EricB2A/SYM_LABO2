@@ -4,11 +4,27 @@
 
     <application
         android:allowBackup="true"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Labo2">
+        <activity
+            android:name=".GraphQLActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ZipActivity"
+            android:exported="true" />
+        <activity
+            android:name=".SerializedActivity"
+            android:exported="true" />
+        <activity
+            android:name=".DeferredActivity"
+            android:exported="true" />
+        <activity
+            android:name=".AsyncActivity"
+            android:exported="true" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
