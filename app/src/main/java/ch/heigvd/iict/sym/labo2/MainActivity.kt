@@ -2,6 +2,8 @@ package ch.heigvd.iict.sym.labo2
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Debug
+import android.util.Log
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 
@@ -26,6 +28,7 @@ class MainActivity : AppCompatActivity() {
         async.setOnClickListener {
             val intent = Intent(this, AsyncActivity::class.java)
             startActivity(intent)
+
         }
 
         deferred.setOnClickListener {
