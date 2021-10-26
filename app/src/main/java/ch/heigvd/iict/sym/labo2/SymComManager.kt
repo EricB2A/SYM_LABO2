@@ -9,10 +9,16 @@ import java.net.URL
 
 class SymComManager(var communicationEventListener: CommunicationEventListener? = null) {
 
+    companion object {
+        const val URL = "http://mobile.iict.ch/api/txt";
+    }
+
+
     fun sendRequest(url: String, request: String, contentType: String, accept: String) {
         // Aucune idée de ce que je fais ici.
         val handler = HandlerThread("POST")
         handler.start()
+
 
         Handler(handler.looper).post {
             val urlConnection = URL(url)
@@ -38,6 +44,7 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
             }
 
         }
+
 
     }
 

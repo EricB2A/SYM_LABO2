@@ -21,28 +21,39 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="text"
-            android:text="@string/activity_async_input"
+            android:text=""
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            android:autofillHints="@string/activity_input" />
 
         <Button
             android:id="@+id/activity_async_submit"
-            android:text="@string/activity_async_submit"
+            android:text="@string/activity_submit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/activity_async_input"
             />
 
         <TextView
-            android:id="@+id/activity_async_output"
+            android:id="@+id/activity_async_information"
+            android:textSize="20sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/activity_async_output"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="434dp"
             android:layout_below="@id/activity_async_submit"
-            />
+            android:text="@string/activity_informations"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+        <TextView
+            android:id="@+id/activity_async_output"
+            android:textSize="20sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/activity_async_information"
+            android:text="@string/activity_output"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
 
 

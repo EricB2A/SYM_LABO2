@@ -15,8 +15,9 @@
     <string name="main_btn_zip">Zip</string>
     <string name="main_btn_graphql">GraphQL</string>
 
-    <!-- ACTIVITY ASYNC -->
-    <string name="activity_async_input">Data</string>
-    <string name="activity_async_submit">Envoyer</string>
-    <string name="activity_async_output">Response</string>
+    <!-- SUBMIT/POST/RESPONSE activities -->
+    <string name="activity_input">Data</string>
+    <string name="activity_submit">Envoyer</string>
+    <string name="activity_output">chargement...</string>
+    <string name="activity_informations">RÉPONSE</string>
 </resources>

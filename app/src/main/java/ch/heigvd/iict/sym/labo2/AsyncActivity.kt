@@ -14,7 +14,7 @@ class AsyncActivity : AppCompatActivity() {
     private lateinit var dataOutput: TextView;
     private lateinit var mcm: SymComManager;
 
-    var URL = "http://mobile.iict.ch/api/txt";
+    //var URL = "http://mobile.iict.ch/api/txt";
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +41,7 @@ class AsyncActivity : AppCompatActivity() {
             //val emailInput = email.text?.toString()
             val userInput = dataInput.text?.toString()
             if (userInput != null) {
-                mcm.sendRequest(URL, userInput, "text/plain", "text/plain")
+                mcm.sendRequest(SymComManager.URL, userInput, "text/plain", "text/plain")
             }
 
         }
