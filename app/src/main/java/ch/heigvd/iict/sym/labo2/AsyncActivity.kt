@@ -2,14 +2,10 @@ package ch.heigvd.iict.sym.labo2
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import java.io.BufferedInputStream
 import java.io.InputStreamReader
-import java.io.OutputStream
-import java.io.OutputStreamWriter
 
 
 class AsyncActivity : AppCompatActivity() {
@@ -29,10 +25,9 @@ class AsyncActivity : AppCompatActivity() {
         dataOutput = findViewById(R.id.activity_async_output)
 
         mcm = SymComManager(object : CommunicationEventListener {
-            override fun handleServerResponse(response: String, inputStream: InputStreamReader) {
-                Log.d("PUTE", response)
+            override fun handleServerResponse(response: String, isr: InputStreamReader) {
 
-                val r = inputStream.readText();
+                val r = isr.readText();
 
                 // https://stackoverflow.com/questions/5161951/android-only-the-original-thread-that-created-a-view-hierarchy-can-touch-its-vi
                 runOnUiThread {
