@@ -14,4 +14,7 @@
     <string name="main_btn_ser">Serialise</string>
     <string name="main_btn_zip">Zip</string>
     <string name="main_btn_graphql">GraphQL</string>
+    <string name="sendBtn">Envoyer</string>
+    <string name="requestQueryInput">Envoyer un message</string>
+    <string name="requestResponseHint">Réponse à la requête</string>
 </resources>
