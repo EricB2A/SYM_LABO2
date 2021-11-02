@@ -17,4 +17,14 @@
     <string name="async_send_title">Sending</string>
     <string name="async_btn_send">Send</string>
     <string name="async_receive_title">Receiving</string>
+    <string name="serialized_logs_title">Logs</string>
+    <string name="serialized_send_title">Sending</string>
+    <string name="deferred_send_title">Sending</string>
+    <string name="deferred_logs_title">Logs</string>
+    <string name="deferred_btn_send">Send</string>
+    <string name="serialized_btn_send">Send</string>
+    <string name="serialized_btn_send_xml">XML</string>
+    <string name="serialized_btn_send_json">JSON</string>
+    <string name="serialized_btn_send_porotbuf">ProtoBuf</string>
+    <string name="serialized_btn_send_protobuf">ProtoBuf</string>
 </resources>

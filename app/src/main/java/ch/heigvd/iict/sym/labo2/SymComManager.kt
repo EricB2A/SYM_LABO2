@@ -22,16 +22,16 @@ import java.net.InetAddress
 
 class SymComManager(var communicationEventListener: CommunicationEventListener? = null) {
 
-    fun sendRequest(url: String, request: String) {
-        var handler = Looper.myLooper()?.let { Handler(it) }
-        handler?.post(Runnable {
-            execRequest(url, request)
-        })
+    private var handler: Handler = Looper.getMainLooper()?.let { Handler(it) }!!
+
+    fun sendRequest(url: String, request: String, contentType: String) {
+        Thread {
+            execRequest(url, request, contentType)
+        }.start()
     }
 
-    fun sendRequestDeferred(url: String, request: String){
-        var handler = Looper.myLooper()?.let { Handler(it) }
-        handler?.postDelayed(Runnable {
+    fun sendRequestDeferred(url: String, request: String, contentType: String){
+        Thread {
             val policy = ThreadPolicy.Builder().permitNetwork().build()
             StrictMode.setThreadPolicy(policy)
 
@@ -43,20 +43,23 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
                 connection.requestMethod = "HEAD"
                 val responseCode = connection.responseCode
                 if (responseCode != 200) {
-                    sendRequestDeferred(url, request)
+                    Thread.sleep(5000)
+                    sendRequestDeferred(url, request, contentType)
                 } else {
-                    execRequest(url, request)
+                    execRequest(url, request, contentType)
                 }
             } catch (exception: IOException) {
-                sendRequestDeferred(url, request)
+                Thread.sleep(5000)
+                sendRequestDeferred(url, request, contentType)
             }
-        }, 5000)
+        }.start()
     }
 
-    private fun execRequest(url: String, request: String) {
+    private fun execRequest(url: String, request: String, contentType: String) {
         var urlConn = URL(url)
         var httpConn:HttpURLConnection = urlConn.openConnection() as HttpURLConnection
-        httpConn.setRequestProperty("Content-Type", "text/plain")
+        httpConn.setRequestProperty("Content-Type", contentType)
+        httpConn.setRequestProperty("Accept", contentType)
         httpConn.requestMethod = defaultMethod
         httpConn.doInput = true
         httpConn.doOutput = true
@@ -72,13 +75,14 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
         if (responseCode == HttpURLConnection.HTTP_OK) {
             val response = httpConn.inputStream.bufferedReader().readText()
             Log.d("request", response)
-            // Convert raw JSON to pretty JSON using GSON library
-            /*val gson = GsonBuilder().setPrettyPrinting().create()
-            val prettyJson = gson.toJson(JsonParser.parseString(response))*/
             communicationEventListener?.handleServerResponse(response)
         } else {
             Log.e("HTTPURLCONNECTION_ERROR", responseCode.toString())
+            val response = httpConn.inputStream.bufferedReader().readText()
+            communicationEventListener?.handleServerResponse(response)
         }
+
+        httpConn.disconnect()
     }
 
     companion object {

@@ -15,6 +15,7 @@ class AsyncActivity : AppCompatActivity(), CommunicationEventListener {
     private lateinit var send: Button
     private lateinit var received: EditText
     private lateinit var sent: EditText
+    private lateinit var handler: Handler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,11 +25,13 @@ class AsyncActivity : AppCompatActivity(), CommunicationEventListener {
         received = findViewById(R.id.async_receive_text)
         sent = findViewById(R.id.async_send_text)
 
-        received.isEnabled = false;
+        handler = Looper.getMainLooper()?.let { Handler(it) }!!
+
+        received.isEnabled = false
 
         send.setOnClickListener {
             var s = SymComManager(this)
-            s.sendRequestDeferred("http://mobile.iict.ch/api/txt", sent.text.toString())
+            s.sendRequest("http://mobile.iict.ch/api/txt", sent.text.toString(), "text/plain")
         }
     }
 
