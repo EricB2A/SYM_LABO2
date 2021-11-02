@@ -30,7 +30,8 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
     public enum class ContentType(val text: String) {
         TEXT_PLAIN("text/plain"),
         JSON("application/json"),
-        XML("application/xml");
+        XML("application/xml"),
+        BUFFER_PROTO("application/protobuf");
 
 
         override fun toString(): String {
@@ -43,14 +44,13 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
     }
 
     fun sendRequest(url: String, contentType: ContentType, request: String) {
+        Log.v(this.javaClass.simpleName, "Sending request : " + request)
         val handler = Handler(Looper.getMainLooper()!!)
         Thread() {
             run {
                 val urlObject = URL(url)
                 val httpConnection = urlObject.openConnection() as HttpURLConnection;
                 try {
-
-
                     httpConnection.requestMethod = "POST"
                     httpConnection.setRequestProperty(
                         "Content-Type",
@@ -58,22 +58,20 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
                     );
                     httpConnection.doOutput = true
 
-
                     val bufferWriter = httpConnection.outputStream.bufferedWriter()
                     bufferWriter.write(request)
                     bufferWriter.flush()
-
 
                     val str = StringBuilder()
                     httpConnection.inputStream.bufferedReader().lines().forEach(str::append)
 
                     handler.post {
                         run {
-                            communicationEventListener?.handleServerResponse(str.toString())
+                            communicationEventListener?.handleServerResponse(str.toString(), contentType)
                         }
 
                     }
-                    
+
                 } catch (unknownHostEx: UnknownHostException) {
                     pendingRequests.add(Request(url, contentType, request))
                 } finally {

@@ -17,4 +17,8 @@
     <string name="sendBtn">Envoyer</string>
     <string name="requestQueryInput">Envoyer un message</string>
     <string name="requestResponseHint">Réponse à la requête</string>
+    <string name="xml">XML</string>
+    <string name="json">JSON</string>
+    <string name="protobuf">ProtoBuf</string>
+    <string name="personName">Nom de la personne</string>
 </resources>

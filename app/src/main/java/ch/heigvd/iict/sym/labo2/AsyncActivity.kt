@@ -17,11 +17,13 @@ class AsyncActivity : AppCompatActivity() {
         val sendBtn: Button = findViewById(R.id.sendBtn)
         val requestInput  : EditText = findViewById(R.id.requestTextInput)
         val responseOutput  : TextView = findViewById(R.id.responseTextOutput)
+
         val sym = SymComManager(object : CommunicationEventListener {
-            override fun handleServerResponse(response: String) {
+            override fun handleServerResponse(response: String, contentType: SymComManager.ContentType) {
                 responseOutput.text = response
             }
         })
+
         sendBtn.setOnClickListener {
             sym.sendRequest("http://mobile.iict.ch/api/txt", SymComManager.ContentType.TEXT_PLAIN, requestInput.text.toString())
         }

@@ -11,17 +11,24 @@ class DeferredActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_deferred)
         val sendBtn: Button = findViewById(R.id.sendBtn)
-        val requestInput  : EditText = findViewById(R.id.requestTextInput)
-        val responseOutput  : TextView = findViewById(R.id.responseTextOutput)
+        val requestInput: EditText = findViewById(R.id.requestTextInput)
+        val responseOutput: TextView = findViewById(R.id.responseTextOutput)
         val sym = SymComManager(object : CommunicationEventListener {
-            override fun handleServerResponse(response: String) {
-                val text : String = responseOutput.text.toString()
+            override fun handleServerResponse(
+                response: String,
+                contentType: SymComManager.ContentType
+            ) {
+                val text: String = responseOutput.text.toString()
                 // TODO enelever la suggestion
                 responseOutput.text = text + response + "\n"
             }
         })
         sendBtn.setOnClickListener {
-            sym.sendRequest("http://mobile.iict.ch/api/txt", SymComManager.ContentType.TEXT_PLAIN, requestInput.text.toString())
+            sym.sendRequest(
+                "http://mobile.iict.ch/api/txt",
+                SymComManager.ContentType.TEXT_PLAIN,
+                requestInput.text.toString()
+            )
         }
     }
 }
