@@ -41,7 +41,7 @@ class AsyncActivity : AppCompatActivity() {
             //val emailInput = email.text?.toString()
             val userInput = dataInput.text?.toString()
             if (userInput != null) {
-                mcm.sendRequest(SymComManager.URL, userInput, "text/plain", "text/plain")
+                mcm.sendRequest(SymComManager.TXT_URL, userInput, "text/plain", "text/plain")
             }
 
         }

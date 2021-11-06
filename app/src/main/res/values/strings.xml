@@ -15,9 +15,14 @@
     <string name="main_btn_zip">Zip</string>
     <string name="main_btn_graphql">GraphQL</string>
 
-    <!-- SUBMIT/POST/RESPONSE activities -->
+    <!-- COMMON ACTIVITIES -->
     <string name="activity_input">Data</string>
     <string name="activity_submit">Envoyer</string>
     <string name="activity_output">chargement...</string>
     <string name="activity_informations">RÉPONSE</string>
+
+    <!-- SERIALIZED ACTIVITY -->
+    <string name="activity_serialized_json_submit">ENVOI JSON</string>
+    <string name="activity_serialized_xml_submit">ENVOI XML</string>
+
 </resources>

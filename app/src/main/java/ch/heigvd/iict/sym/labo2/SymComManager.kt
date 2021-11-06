@@ -10,7 +10,9 @@ import java.net.URL
 class SymComManager(var communicationEventListener: CommunicationEventListener? = null) {
 
     companion object {
-        const val URL = "http://mobile.iict.ch/api/txt";
+        const val TXT_URL  = "http://mobile.iict.ch/api/txt"
+        const val JSON_URL = "http://mobile.iict.ch/api/json"
+        const val BASE_URL = "http://mobile.iict.ch/"
     }
 
 
@@ -18,7 +20,6 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
         // Aucune idée de ce que je fais ici.
         val handler = HandlerThread("POST")
         handler.start()
-
 
         Handler(handler.looper).post {
             val urlConnection = URL(url)
