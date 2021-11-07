@@ -2,25 +2,13 @@ package ch.heigvd.iict.sym.labo2
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import java.io.IOException
 import java.io.InputStreamReader
 import java.lang.Exception
 import java.util.*
-import kotlin.concurrent.thread
-import android.os.StrictMode
-import android.os.StrictMode.ThreadPolicy
-import android.util.Log
-import android.util.Log.DEBUG
 import java.net.*
-import kotlin.system.exitProcess
 
 
 class DeferredActivity : AppCompatActivity() {
@@ -50,48 +38,6 @@ class DeferredActivity : AppCompatActivity() {
             }
         }
 
-
-
-
-
-
-
-        /*
-        submitButton.setOnClickListener {
-            val mainHandler = Handler(Looper.getMainLooper())
-            mainHandler.post(object : Runnable {
-                override fun run() {
-
-                    val userInput = dataInput.text?.toString()
-                    if (userInput != null) {
-                        // mcm.sendRequest(SymComManager.TXT_URL, userInput, "text/plain", "text/plain")
-                        messagesToSend.add(userInput)
-
-                        runOnUiThread {
-                            if(InetAddress.getByName(SymComManager.TXT_URL).isReachable(1000)) {
-                                for (queued in messagesToSend) {
-                                    mcm.sendRequest(SymComManager.TXT_URL, queued, "text/plain", "text/plain")
-                                }
-
-                                messagesToSend.removeAll(messagesToSend);
-                                mainHandler.removeCallbacksAndMessages(null);
-
-                            }
-
-                        }
-
-
-
-                    }
-
-                    mainHandler.postDelayed(this, 10000)
-                }
-            })
-
-        }
-
-         */
-
         mcm = SymComManager(object : CommunicationEventListener {
             override fun handleServerResponse(response: String, isr: InputStreamReader) {
 
@@ -104,23 +50,17 @@ class DeferredActivity : AppCompatActivity() {
 
             }
         })
-
     }
 
     private fun tryToSendToServer(userInput: String) {
 
-        var c = 0;
         val timer = Timer()
         timer.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
-                println(userInput)
-                println("==")
 
                 messagesToSend.add(userInput)
 
                 Thread {
-                    println("in the thread ma gueuel")
-
 
                     if(isHostReachable(SymComManager.BASE_URL, 1000)) {
                         for (queued in messagesToSend) {
@@ -128,7 +68,7 @@ class DeferredActivity : AppCompatActivity() {
                         }
 
                         messagesToSend.removeAll(messagesToSend);
-                        timer.cancel()
+                       timer.cancel()
                     }
                 }.start()
 
