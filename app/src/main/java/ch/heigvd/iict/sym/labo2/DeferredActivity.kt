@@ -33,32 +33,30 @@ class DeferredActivity : AppCompatActivity() {
 
         submitButton.setOnClickListener {
             val userInput = dataInput.text?.toString()
-            if(userInput != null) {
+            if(userInput != null && userInput != "") {
                 tryToSendToServer(userInput);
             }
         }
 
         mcm = SymComManager(object : CommunicationEventListener {
-            override fun handleServerResponse(response: String, isr: InputStreamReader) {
-
-                val r = isr.readText();
+            override fun handleServerResponse(response: String, contentType: String) {
 
                 // https://stackoverflow.com/questions/5161951/android-only-the-original-thread-that-created-a-view-hierarchy-can-touch-its-vi
                 runOnUiThread {
-                    dataOutput.text = r;
+                    dataOutput.text = response;
                 }
 
             }
         })
     }
 
-    private fun tryToSendToServer(userInput: String) {
+    private fun tryToSendToServer(message: String) {
 
         val timer = Timer()
         timer.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
 
-                messagesToSend.add(userInput)
+                messagesToSend.add(message)
 
                 Thread {
 
@@ -77,7 +75,7 @@ class DeferredActivity : AppCompatActivity() {
 
     }
 
-    fun isHostReachable(url: String, timeout: Int): Boolean {
+    private fun isHostReachable(url: String, timeout: Int): Boolean {
         return try {
             val myUrl = URL(url)
             val connection: URLConnection = myUrl.openConnection()

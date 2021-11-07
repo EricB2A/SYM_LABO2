@@ -13,7 +13,15 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
         const val TXT_URL  = "http://mobile.iict.ch/api/txt"
         const val JSON_URL = "http://mobile.iict.ch/api/json"
         const val BASE_URL = "http://mobile.iict.ch/"
+
+        const val CONTENT_TYPE_JSON = "application/json"
+        const val CONTENT_TYPE_TEXT = "text/plain"
+        const val CONTENT_TYPE_ANY = "*/*"
+        const val CONTENT_TYPE_XML = "application/xml"
+
+
     }
+
 
 
     fun sendRequest(url: String, request: String, contentType: String, accept: String) {
@@ -41,7 +49,8 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
 
                 val isr = InputStreamReader(this.inputStream)
 
-                communicationEventListener?.handleServerResponse(responseMessage, isr)
+
+                communicationEventListener?.handleServerResponse(isr.readText(), accept)
             }
 
         }

@@ -25,13 +25,11 @@ class AsyncActivity : AppCompatActivity() {
         dataOutput = findViewById(R.id.activity_async_output)
 
         mcm = SymComManager(object : CommunicationEventListener {
-            override fun handleServerResponse(response: String, isr: InputStreamReader) {
-
-                val r = isr.readText();
+            override fun handleServerResponse(response: String, contentType: String) {
 
                 // https://stackoverflow.com/questions/5161951/android-only-the-original-thread-that-created-a-view-hierarchy-can-touch-its-vi
                 runOnUiThread {
-                    dataOutput.text = r;
+                    dataOutput.text = response;
                 }
 
             }
