@@ -9,8 +9,10 @@ import android.util.Xml
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import ch.heigvd.iict.sym.protobuf.DirectoryOuterClass
+import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
 import org.xmlpull.v1.XmlSerializer
+import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.OutputStream
@@ -19,16 +21,23 @@ import java.util.*
 class SerializedActivity : AppCompatActivity(), CommunicationEventListener {
 
     class Person(var name: String, var firstname: String, var middlename: String?, var phone: Phone) {
+        constructor() : this("", "", null, Phone())
+
         class Phone(var number: String, var type: PhoneType) {
+            constructor(): this("", PhoneType.HOME)
             enum class PhoneType(val phoneType: String) {
                 HOME("home"),
                 WORK("work"),
                 MOBILE("mobile")
             }
+
+            override fun toString(): String {
+                return "$number ($type)"
+            }
         }
 
         override fun toString(): String {
-            return "$name $firstname"
+            return "$name $firstname ${middlename.takeIf { it != null }} ${phone.toString()}"
         }
     }
 
@@ -45,6 +54,8 @@ class SerializedActivity : AppCompatActivity(), CommunicationEventListener {
     private lateinit var personPhoneType: Spinner
     private lateinit var btnAddPerson: Button
     private lateinit var btnClearList: Button
+
+    private lateinit var adapter: ArrayAdapter<Person>
 
     private lateinit var handler: Handler
 
@@ -68,7 +79,7 @@ class SerializedActivity : AppCompatActivity(), CommunicationEventListener {
         btnAddPerson = findViewById(R.id.serialized_form_btn_add_person)
         btnClearList = findViewById(R.id.serialized_form_btn_clear_list)
 
-        val adapter :ArrayAdapter<Person> = ArrayAdapter(
+        adapter = ArrayAdapter(
             this,
             android.R.layout.simple_list_item_1,
             persons
@@ -166,14 +177,17 @@ class SerializedActivity : AppCompatActivity(), CommunicationEventListener {
     }
 
     override fun handleServerResponse(response: String) {
-        received.setText(response)
+        received.setText("")
+        for (p in XMLToPersons(response)) {
+            received.setText("${received.text}\n${p.toString()}")
+        }
     }
 
-    fun toast(text: String) {
+    private fun toast(text: String) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
     }
 
-    fun addElemToXML(serializer: XmlSerializer, tag: String, value: String?, attributeName: String? = null, attributeValue: String? = null) {
+    private fun addElemToXML(serializer: XmlSerializer, tag: String, value: String?, attributeName: String? = null, attributeValue: String? = null) {
         if (value != null) {
             if(value.isNotBlank()) {
                 serializer.startTag(null, tag)
@@ -186,5 +200,58 @@ class SerializedActivity : AppCompatActivity(), CommunicationEventListener {
                 serializer.endTag(null, tag)
             }
         }
+    }
+
+    private fun XMLToPersons(xml: String): MutableList<Person> {
+        var persons = mutableListOf<Person>()
+
+        var factory = XmlPullParserFactory.newInstance();
+        factory.isNamespaceAware = false
+        var xpp = factory.newPullParser()
+
+        val stream = ByteArrayInputStream(xml.toByteArray())
+
+        xpp.setInput(stream, null)
+        var eventType = xpp.eventType
+        while (eventType != XmlPullParser.END_DOCUMENT) {
+            if(eventType == XmlPullParser.START_TAG && xpp.name == "person") {
+                val p = Person()
+                eventType = xpp.next()
+                while (eventType != XmlPullParser.END_TAG || xpp.name != "person") {
+                    when(eventType) {
+                        XmlPullParser.START_TAG -> {
+                            when(xpp.name) {
+                                "name" -> {
+                                    xpp.next()
+                                    p.name = xpp.text
+                                }
+                                "firstname" -> {
+                                    xpp.next()
+                                    p.firstname = xpp.text
+                                }
+                                "middlename" -> {
+                                    xpp.next()
+                                    p.middlename = xpp.text
+                                }
+                                "phone" -> {
+                                    p.phone.type = Person.Phone.PhoneType.valueOf(
+                                        xpp.getAttributeValue(null, "type")
+                                            .toString()
+                                            .uppercase(Locale.getDefault())
+                                    )
+                                    xpp.next()
+                                    p.phone.number = xpp.text
+                                }
+                            }
+                        }
+                    }
+                    eventType = xpp.next()
+                }
+                persons.add(p)
+            }
+            eventType = xpp.next()
+        }
+
+        return persons
     }
 }
