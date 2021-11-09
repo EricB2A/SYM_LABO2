@@ -15,6 +15,7 @@ import java.net.URL
 import android.os.StrictMode
 import android.os.StrictMode.ThreadPolicy
 import android.os.Bundle
+import ch.heigvd.iict.sym.protobuf.DirectoryOuterClass
 import java.io.IOException
 import java.lang.ref.WeakReference
 import java.net.InetAddress
@@ -74,6 +75,7 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
         val responseCode = httpConn.responseCode
         if (responseCode == HttpURLConnection.HTTP_OK) {
             val response = httpConn.inputStream.bufferedReader().readText()
+
             Log.d("request", response)
             communicationEventListener?.handleServerResponse(response)
         } else {

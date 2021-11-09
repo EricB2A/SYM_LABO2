@@ -4,9 +4,16 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
+import android.util.Xml
 import android.widget.Button
 import android.widget.EditText
 import ch.heigvd.iict.sym.protobuf.DirectoryOuterClass
+import org.xmlpull.v1.XmlPullParserFactory
+import org.xmlpull.v1.XmlSerializer
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.OutputStream
 
 class SerializedActivity : AppCompatActivity(), CommunicationEventListener {
 
@@ -33,7 +40,23 @@ class SerializedActivity : AppCompatActivity(), CommunicationEventListener {
 
         sendXML.setOnClickListener {
             var s = SymComManager(this)
-            s.sendRequest("http://mobile.iict.ch/api/xml", sent.text.toString(), "application/xml")
+
+            val factory = XmlPullParserFactory.newInstance()
+            factory.isNamespaceAware = false
+            val serializer = factory.newSerializer()
+            val stream = ByteArrayOutputStream()
+
+            serializer.setOutput(stream, null)
+            serializer.startDocument("UTF-8", null)
+            serializer.docdecl(" directory SYSTEM \"http://mobile.iict.ch/directory.dtd\"")
+            serializer.startTag(null, "directory")
+            serializer.endTag(null, "directory")
+            serializer.endDocument()
+            serializer.flush()
+
+            Log.d("xml", String(stream.toByteArray()))
+            //s.sendRequest("http://mobile.iict.ch/api/xml", sent.text.toString(), "application/xml")
+            s.sendRequest("http://mobile.iict.ch/api/xml", String(stream.toByteArray()), "application/xml")
         }
 
         sendJSON.setOnClickListener {
@@ -49,12 +72,13 @@ class SerializedActivity : AppCompatActivity(), CommunicationEventListener {
                     .setFirstname("Jean")
                     .setMiddlename("Le")
                     .addPhone(DirectoryOuterClass.Phone.newBuilder()
-                        .setType(DirectoryOuterClass.Phone.Type.MOBILE)
+                        //.setType(DirectoryOuterClass.Phone.Type.MOBILE)
                         .setNumber("077 444 88 88")
-                    )
+                    ).build()
             ).build()
 
-            s.sendRequest("http://mobile.iict.ch/api/protobuf", sent.text.toString(), "application/protobuf")
+            Log.d("main", sent.text.toString())
+            s.sendRequest("http://mobile.iict.ch/api/protobuf", p.toString(), "application/protobuf")
         }
     }
 
