@@ -6,23 +6,49 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.util.Xml
-import android.widget.Button
-import android.widget.EditText
+import android.widget.*
+import androidx.recyclerview.widget.RecyclerView
 import ch.heigvd.iict.sym.protobuf.DirectoryOuterClass
 import org.xmlpull.v1.XmlPullParserFactory
 import org.xmlpull.v1.XmlSerializer
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.OutputStream
+import java.util.*
 
 class SerializedActivity : AppCompatActivity(), CommunicationEventListener {
+
+    class Person(var name: String, var firstname: String, var middlename: String?, var phone: Phone) {
+        class Phone(var number: String, var type: PhoneType) {
+            enum class PhoneType(val phoneType: String) {
+                HOME("home"),
+                WORK("work"),
+                MOBILE("mobile")
+            }
+        }
+
+        override fun toString(): String {
+            return "$name $firstname"
+        }
+    }
 
     private lateinit var sendXML: Button
     private lateinit var sendJSON: Button
     private lateinit var sendProtoBuf: Button
     private lateinit var received: EditText
-    private lateinit var sent: EditText
+
+    private lateinit var listPersons: ListView
+    private lateinit var personName: EditText
+    private lateinit var personFirstname: EditText
+    private lateinit var personMiddlename: EditText
+    private lateinit var personPhoneNumber: EditText
+    private lateinit var personPhoneType: Spinner
+    private lateinit var btnAddPerson: Button
+    private lateinit var btnClearList: Button
+
     private lateinit var handler: Handler
+
+    private var persons: MutableList<Person> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +58,53 @@ class SerializedActivity : AppCompatActivity(), CommunicationEventListener {
         sendJSON = findViewById(R.id.serialized_btn_send_json)
         sendProtoBuf = findViewById(R.id.serialized_btn_send_protobuf)
         received = findViewById(R.id.serialized_receive_text)
-        sent = findViewById(R.id.serialized_send_text)
+
+        listPersons = findViewById(R.id.serialized_form_persons_list)
+        personName = findViewById(R.id.serialized_form_name)
+        personFirstname = findViewById(R.id.serialized_form_firstname)
+        personMiddlename = findViewById(R.id.serialized_form_middlename)
+        personPhoneNumber = findViewById(R.id.serialized_form_phone_number)
+        personPhoneType = findViewById(R.id.serialized_form_phone_type)
+        btnAddPerson = findViewById(R.id.serialized_form_btn_add_person)
+        btnClearList = findViewById(R.id.serialized_form_btn_clear_list)
+
+        val adapter :ArrayAdapter<Person> = ArrayAdapter(
+            this,
+            android.R.layout.simple_list_item_1,
+            persons
+        )
+
+        listPersons.adapter = adapter
+
+        btnAddPerson.setOnClickListener {
+            if (personName.text.toString().isBlank()) {
+                toast("Add a name")
+            } else if(personFirstname.text.toString().isBlank()) {
+                toast("Add a firstname")
+            } else if(personPhoneNumber.text.toString().isBlank()) {
+                toast("Add a phone number")
+            } else {
+                persons.add(
+                    Person(
+                        personName.text.toString(),
+                        personFirstname.text.toString(),
+                        personMiddlename.text.toString().ifEmpty { null },
+                        Person.Phone(
+                            personPhoneNumber.text.toString(),
+                            Person.Phone.PhoneType.valueOf(
+                                personPhoneType.selectedItem.toString().uppercase(Locale.getDefault())
+                            )
+                        )
+                    )
+                )
+                adapter.notifyDataSetChanged()
+            }
+        }
+
+        btnClearList.setOnClickListener {
+            persons.clear()
+            adapter.notifyDataSetChanged()
+        }
 
         handler = Looper.getMainLooper()?.let { Handler(it) }!!
 
@@ -50,18 +122,29 @@ class SerializedActivity : AppCompatActivity(), CommunicationEventListener {
             serializer.startDocument("UTF-8", null)
             serializer.docdecl(" directory SYSTEM \"http://mobile.iict.ch/directory.dtd\"")
             serializer.startTag(null, "directory")
+
+            persons.forEach {
+                serializer.startTag(null, "person")
+                addElemToXML(serializer, "name", it.name)
+                addElemToXML(serializer, "firstname", it.firstname)
+                addElemToXML(serializer, "middlename", it.middlename)
+
+                addElemToXML(serializer, "phone", it.phone.number, "type", it.phone.type.phoneType)
+
+                serializer.endTag(null, "person")
+            }
+
             serializer.endTag(null, "directory")
             serializer.endDocument()
             serializer.flush()
 
             Log.d("xml", String(stream.toByteArray()))
-            //s.sendRequest("http://mobile.iict.ch/api/xml", sent.text.toString(), "application/xml")
             s.sendRequest("http://mobile.iict.ch/api/xml", String(stream.toByteArray()), "application/xml")
         }
 
         sendJSON.setOnClickListener {
             var s = SymComManager(this)
-            s.sendRequest("http://mobile.iict.ch/api/json", sent.text.toString(), "application/json")
+            //s.sendRequest("http://mobile.iict.ch/api/json", sent.text.toString(), "application/json")
         }
 
         sendProtoBuf.setOnClickListener {
@@ -77,12 +160,31 @@ class SerializedActivity : AppCompatActivity(), CommunicationEventListener {
                     ).build()
             ).build()
 
-            Log.d("main", sent.text.toString())
+            //Log.d("main", sent.text.toString())
             s.sendRequest("http://mobile.iict.ch/api/protobuf", p.toString(), "application/protobuf")
         }
     }
 
     override fun handleServerResponse(response: String) {
         received.setText(response)
+    }
+
+    fun toast(text: String) {
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+    }
+
+    fun addElemToXML(serializer: XmlSerializer, tag: String, value: String?, attributeName: String? = null, attributeValue: String? = null) {
+        if (value != null) {
+            if(value.isNotBlank()) {
+                serializer.startTag(null, tag)
+                if(attributeName != null && attributeValue != null) {
+                    if(attributeName.isNotBlank() && attributeValue.isNotBlank()) {
+                        serializer.attribute(null, attributeName, attributeValue)
+                    }
+                }
+                serializer.text(value)
+                serializer.endTag(null, tag)
+            }
+        }
     }
 }
