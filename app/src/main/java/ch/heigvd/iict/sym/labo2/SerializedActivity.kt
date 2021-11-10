@@ -5,17 +5,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.util.Xml
 import android.widget.*
-import androidx.recyclerview.widget.RecyclerView
 import ch.heigvd.iict.sym.protobuf.DirectoryOuterClass
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
 import org.xmlpull.v1.XmlSerializer
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.OutputStream
 import java.util.*
 
 class SerializedActivity : AppCompatActivity(), CommunicationEventListener {
@@ -37,7 +33,7 @@ class SerializedActivity : AppCompatActivity(), CommunicationEventListener {
         }
 
         override fun toString(): String {
-            return "$name $firstname ${middlename.takeIf { it != null }} ${phone.toString()}"
+            return "$name $firstname ${if(middlename != null && middlename!!.isNotBlank()) middlename else "" } $phone"
         }
     }
 
@@ -54,6 +50,9 @@ class SerializedActivity : AppCompatActivity(), CommunicationEventListener {
     private lateinit var personPhoneType: Spinner
     private lateinit var btnAddPerson: Button
     private lateinit var btnClearList: Button
+
+    // TODO remove this shit ! only here because we will soon merge and refactor
+    private var lastEncodingUsed: String = ""
 
     private lateinit var adapter: ArrayAdapter<Person>
 
@@ -99,7 +98,7 @@ class SerializedActivity : AppCompatActivity(), CommunicationEventListener {
                     Person(
                         personName.text.toString(),
                         personFirstname.text.toString(),
-                        personMiddlename.text.toString().ifEmpty { null },
+                        personMiddlename.text.toString().ifBlank { null },
                         Person.Phone(
                             personPhoneNumber.text.toString(),
                             Person.Phone.PhoneType.valueOf(
@@ -122,6 +121,7 @@ class SerializedActivity : AppCompatActivity(), CommunicationEventListener {
         received.isEnabled = false
 
         sendXML.setOnClickListener {
+            lastEncodingUsed = "xml"
             var s = SymComManager(this)
 
             val factory = XmlPullParserFactory.newInstance()
@@ -136,12 +136,10 @@ class SerializedActivity : AppCompatActivity(), CommunicationEventListener {
 
             persons.forEach {
                 serializer.startTag(null, "person")
-                addElemToXML(serializer, "name", it.name)
-                addElemToXML(serializer, "firstname", it.firstname)
-                addElemToXML(serializer, "middlename", it.middlename)
-
-                addElemToXML(serializer, "phone", it.phone.number, "type", it.phone.type.phoneType)
-
+                serializer.addElemToXML("name", it.name)
+                serializer.addElemToXML("firstname", it.firstname)
+                serializer.addElemToXML("middlename", it.middlename)
+                serializer.addElemToXML("phone", it.phone.number, "type", it.phone.type.phoneType)
                 serializer.endTag(null, "person")
             }
 
@@ -159,27 +157,53 @@ class SerializedActivity : AppCompatActivity(), CommunicationEventListener {
         }
 
         sendProtoBuf.setOnClickListener {
+            lastEncodingUsed = "protobuf"
             var s = SymComManager(this)
-            var p = DirectoryOuterClass.Directory.newBuilder().addResults(
-                DirectoryOuterClass.Person.newBuilder()
-                    .setName("Bon")
-                    .setFirstname("Jean")
-                    .setMiddlename("Le")
-                    .addPhone(DirectoryOuterClass.Phone.newBuilder()
-                        //.setType(DirectoryOuterClass.Phone.Type.MOBILE)
-                        .setNumber("077 444 88 88")
-                    ).build()
-            ).build()
 
-            //Log.d("main", sent.text.toString())
-            s.sendRequest("http://mobile.iict.ch/api/protobuf", p.toString(), "application/protobuf")
+            var index = 0
+            var d = DirectoryOuterClass.Directory.newBuilder()
+            persons.forEach {
+                var p = DirectoryOuterClass.Person.newBuilder()
+                    .setName(it.name)
+                    .setFirstname(it.firstname)
+                    .addPhone(DirectoryOuterClass.Phone.newBuilder()
+                        .setType(DirectoryOuterClass.Phone.Type.valueOf(it.phone.type.phoneType.uppercase(Locale.getDefault())))
+                        .setNumber(it.phone.number)
+                        .build()
+                    )
+                if(it.middlename != null && (it.middlename as String).isNotBlank()) {
+                    p.setMiddlename(it.middlename)
+                }
+                d.addResults(
+                    index,
+                    p.build()
+                )
+                index++
+            }
+
+            val stream = ByteArrayOutputStream()
+            d.build().writeTo(stream)
+            Log.d("main", String(stream.toByteArray()))
+            s.sendRequest("http://mobile.iict.ch/api/protobuf", String(stream.toByteArray()), "application/protobuf")
         }
     }
 
     override fun handleServerResponse(response: String) {
         received.setText("")
-        for (p in XMLToPersons(response)) {
-            received.setText("${received.text}\n${p.toString()}")
+        when(lastEncodingUsed) {
+            "xml" -> {
+                for (p in XMLToPersons(response)) {
+                    received.setText("${received.text}\n${p}")
+                }
+            }
+            "json" -> {
+
+            }
+            "protobuf" -> {
+                for (p in ProtobufToPersons(response).resultsList) {
+                    received.setText("${received.text}\n${p}")
+                }
+            }
         }
     }
 
@@ -187,19 +211,24 @@ class SerializedActivity : AppCompatActivity(), CommunicationEventListener {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
     }
 
-    private fun addElemToXML(serializer: XmlSerializer, tag: String, value: String?, attributeName: String? = null, attributeValue: String? = null) {
+    private fun XmlSerializer.addElemToXML(tag: String, value: String?, attributeName: String? = null, attributeValue: String? = null) {
         if (value != null) {
             if(value.isNotBlank()) {
-                serializer.startTag(null, tag)
+                this.startTag(null, tag)
                 if(attributeName != null && attributeValue != null) {
                     if(attributeName.isNotBlank() && attributeValue.isNotBlank()) {
-                        serializer.attribute(null, attributeName, attributeValue)
+                        this.attribute(null, attributeName, attributeValue)
                     }
                 }
-                serializer.text(value)
-                serializer.endTag(null, tag)
+                this.text(value)
+                this.endTag(null, tag)
             }
         }
+    }
+
+    private fun ProtobufToPersons(protobuf: String): DirectoryOuterClass.Directory {
+        var stream = ByteArrayInputStream(protobuf.toByteArray())
+        return DirectoryOuterClass.Directory.newBuilder().mergeFrom(stream).build()
     }
 
     private fun XMLToPersons(xml: String): MutableList<Person> {
