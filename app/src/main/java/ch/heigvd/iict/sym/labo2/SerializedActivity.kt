@@ -41,7 +41,7 @@ class SerializedActivity : AppCompatActivity() {
                     Person(requestTxtView.text.toString())
                 )
             )
-        }
+        }ot
     }
 
     private fun parseResponse(response: String, contentType: SymComManager.ContentType): Person {
