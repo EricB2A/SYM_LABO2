@@ -1,9 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SerializedActivity">
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="40dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/lblPersonName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:text="@string/personName" />
+
+    <EditText
+        android:id="@+id/requestTextInput"
+        android:labelFor="@+id/lblPersonName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:autofillHints="text"
+        android:gravity="top"
+        android:hint="@string/requestQueryInput"
+        android:inputType="text"
+        android:padding="30dp" />
+
+    <RadioGroup
+        android:id="@+id/serializationRadioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/serializationXMLRadio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/xml" />
+
+        <RadioButton
+            android:id="@+id/serializationJSONRadio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/json" />
+
+        <RadioButton
+            android:id="@+id/serializationProtoBufRadio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/protobuf" />
+
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/sendSerialBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:text="@string/sendBtn" />
+
+
+    <TextView
+        android:id="@+id/responseTextOutput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+        android:hint="@string/requestResponseHint"
+        android:padding="30dp" />
+</LinearLayout>
