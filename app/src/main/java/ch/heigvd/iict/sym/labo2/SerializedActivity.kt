@@ -8,6 +8,7 @@ import android.widget.EditText
 import android.widget.RadioGroup
 import android.widget.TextView
 import ch.heigvd.iict.sym.labo2.directory.Directory
+import ch.heigvd.iict.sym.labo2.directory.DirectoryUtils
 import ch.heigvd.iict.sym.labo2.directory.Person
 import ch.heigvd.iict.sym.labo2.directory.Phone
 import com.google.gson.Gson
@@ -46,7 +47,7 @@ class SerializedActivity : AppCompatActivity() {
                 getContentType(serializationRadioGroup),
                 serialize(
                     getContentType(serializationRadioGroup),
-                    generateDirectory(requestTxtView.text.toString())
+                    DirectoryUtils.generateDirectory(requestTxtView.text.toString())
                 )
             )
         }
@@ -73,30 +74,6 @@ class SerializedActivity : AppCompatActivity() {
             SymComManager.ContentType.BUFFER_PROTO -> "protobuf"
             else -> throw Exception("No url")
         }
-    }
-
-    /**
-     * Genère une liste de Phone
-     */
-    private fun generatePhone(): MutableList<Phone> {
-        val phone1 = Phone("012798321", Phone.PhoneType.HOME.toString());
-        val phone2 = Phone("012421412", Phone.PhoneType.WORK.toString())
-        return mutableListOf(phone1, phone2)
-    }
-
-    /**
-     * Genère une liste de Person
-     */
-    private fun generatePeople(name: String): MutableList<Person> {
-        val person1 = Person(name, "Frank", "tamer", generatePhone())
-        return mutableListOf(person1)
-    }
-
-    /**
-     * Genère un annuaire Directory
-     */
-    private fun generateDirectory(name: String): Directory {
-        return Directory(generatePeople(name));
     }
 
     /**

@@ -2,7 +2,9 @@ package ch.heigvd.iict.sym.labo2.directory
 
 import org.simpleframework.xml.Attribute
 import org.simpleframework.xml.Root
+import org.simpleframework.xml.Serializer
 import org.simpleframework.xml.Text
+import java.io.Serializable
 
 @Root
 class Phone @JvmOverloads  constructor(
@@ -11,7 +13,7 @@ class Phone @JvmOverloads  constructor(
 
     @field:Attribute(required = true )
     var type: String = PhoneType.HOME.toString()
-) {
+) : Serializable{
 
     enum class PhoneType(val text: String) {
         HOME("home"),

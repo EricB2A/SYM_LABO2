@@ -15,9 +15,6 @@ import java.util.*
 class SymComManager(var communicationEventListener: CommunicationEventListener? = null) {
 
     private var pendingRequests: MutableList<Request> = arrayListOf();
-
-
-
     init {
         Timer().schedule(object : TimerTask() {
             override fun run() {
@@ -81,9 +78,7 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
                         run {
                             communicationEventListener?.handleServerResponse(str.toString(), contentType)
                         }
-
                     }
-
                 } catch (unknownHostEx: UnknownHostException) {
                     pendingRequests.add(Request(url, contentType, request))
                 } finally {

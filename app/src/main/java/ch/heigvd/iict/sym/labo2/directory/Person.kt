@@ -17,7 +17,4 @@ class Person @JvmOverloads constructor(
     var middlename: String ="",
     @field:ElementList(inline = true, empty = false)
     var phones: MutableList<Phone> = mutableListOf()
-) : Serializable {
-
-
-}
+) : Serializable {}
