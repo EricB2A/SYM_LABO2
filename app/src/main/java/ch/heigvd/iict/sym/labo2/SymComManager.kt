@@ -16,18 +16,29 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
 
     private var pendingRequests: MutableList<Request> = arrayListOf();
 
+
+
     init {
         Timer().schedule(object : TimerTask() {
             override fun run() {
+
+                // TODO A tester
                 if (hasPendingRequest()) {
-                    val req: Request = pendingRequests.removeFirst()
-                    sendRequest(req.url, req.contentType, req.request)
+                    // copy pending request
+                    val reqToSend = pendingRequests.toMutableList();
+
+                    // clear la liste, si la requete echoue à nouveau alors elle sera à nouveau ajouter
+                    // par sendRequest
+                    pendingRequests.clear()
+                    for(req in reqToSend){
+                        sendRequest(req.url, req.contentType, req.request)
+                    }
                 }
             }
         }, 5000, 5000);
     }
 
-    public enum class ContentType(val text: String) {
+    enum class ContentType(val text: String) {
         TEXT_PLAIN("text/plain"),
         JSON("application/json"),
         XML("application/xml"),
@@ -64,6 +75,7 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
 
                     val str = StringBuilder()
                     httpConnection.inputStream.bufferedReader().lines().forEach(str::append)
+                    Log.v(this.javaClass.simpleName, "API response: $str")
 
                     handler.post {
                         run {
