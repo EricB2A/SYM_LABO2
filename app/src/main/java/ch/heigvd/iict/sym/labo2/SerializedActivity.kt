@@ -31,7 +31,8 @@ class SerializedActivity : AppCompatActivity() {
         val symCom: SymComManager = SymComManager(object : CommunicationEventListener {
             override fun handleServerResponse(
                 response: String,
-                contentType: SymComManager.ContentType
+                contentType: SymComManager.ContentType,
+                size: Int
             ) {
                  val responseDir = parseResponse(response, contentType)
                 responseTxtView.text =

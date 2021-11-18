@@ -12,7 +12,7 @@
     <string name="main_btn_async">Async</string>
     <string name="main_btn_def">Deferred</string>
     <string name="main_btn_ser">Serialise</string>
-    <string name="main_btn_zip">Zip</string>
+    <string name="main_btn_zip">Compressed</string>
     <string name="main_btn_graphql">GraphQL</string>
     <string name="sendBtn">Envoyer</string>
     <string name="requestQueryInput">Envoyer un message</string>
@@ -21,4 +21,7 @@
     <string name="json">JSON</string>
     <string name="protobuf">ProtoBuf</string>
     <string name="personName">Nom de la personne</string>
+    <string name="compress_btn_compress">Envoi compressé</string>
+    <string name="compress_btn_uncompress">Envoi non-compressé</string>
+    <string name="requestResponseSizeHint">Taille de la réponse</string>
 </resources>

@@ -15,7 +15,7 @@
             android:name=".GraphQLActivity"
             android:exported="true" />
         <activity
-            android:name=".ZipActivity"
+            android:name=".CompressedActivity"
             android:exported="true" />
         <activity
             android:name=".SerializedActivity"

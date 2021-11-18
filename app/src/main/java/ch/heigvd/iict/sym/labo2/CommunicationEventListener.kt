@@ -1,5 +1,5 @@
 package ch.heigvd.iict.sym.labo2
 
 interface CommunicationEventListener {
-    fun handleServerResponse(response :String, contentType: SymComManager.ContentType)
+    fun handleServerResponse(response: String, contentType: SymComManager.ContentType, size: Int)
 }

@@ -16,7 +16,8 @@ class DeferredActivity : AppCompatActivity() {
         val sym = SymComManager(object : CommunicationEventListener {
             override fun handleServerResponse(
                 response: String,
-                contentType: SymComManager.ContentType
+                contentType: SymComManager.ContentType,
+                size: Int
             ) {
                 val text: String = responseOutput.text.toString()
                 // TODO enelever la suggestion

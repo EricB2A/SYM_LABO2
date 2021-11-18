@@ -2,13 +2,9 @@ package ch.heigvd.iict.sym.labo2
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import org.w3c.dom.Text
 
 class AsyncActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,7 +15,11 @@ class AsyncActivity : AppCompatActivity() {
         val responseOutput  : TextView = findViewById(R.id.responseTextOutput)
 
         val sym = SymComManager(object : CommunicationEventListener {
-            override fun handleServerResponse(response: String, contentType: SymComManager.ContentType) {
+            override fun handleServerResponse(
+                response: String,
+                contentType: SymComManager.ContentType,
+                size: Int
+            ) {
                 responseOutput.text = response
             }
         })

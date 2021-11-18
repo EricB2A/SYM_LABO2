@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         zip.setOnClickListener {
-            val intent = Intent(this, ZipActivity::class.java)
+            val intent = Intent(this, CompressedActivity::class.java)
             startActivity(intent)
         }
 

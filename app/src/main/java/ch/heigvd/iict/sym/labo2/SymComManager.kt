@@ -1,16 +1,17 @@
 package ch.heigvd.iict.sym.labo2
 
-import android.os.Build
 import android.os.Handler
-import android.os.HandlerThread
 import android.os.Looper
 import android.util.Log
-import androidx.annotation.RequiresApi
-import java.lang.StringBuilder
+import java.io.DataOutputStream
+import java.io.InputStream
+import java.io.OutputStream
 import java.net.HttpURLConnection
 import java.net.URL
 import java.net.UnknownHostException
+import java.nio.charset.StandardCharsets
 import java.util.*
+import java.util.zip.*
 
 class SymComManager(var communicationEventListener: CommunicationEventListener? = null) {
 
@@ -35,6 +36,19 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
         }, 5000, 5000);
     }
 
+    /**
+     * TODO: On pourrait utiliser un companions object :
+     * companion object {
+     * const val TXT_URL  = "http://mobile.iict.ch/api/txt"
+     * const val JSON_URL = "http://mobile.iict.ch/api/json"
+     * const val BASE_URL = "http://mobile.iict.ch/"
+
+     * const val CONTENT_TYPE_JSON = "application/json"
+     * const val CONTENT_TYPE_TEXT = "text/plain"
+     * }
+     *
+     * Accessible via SymComManager.TXT_URL
+     */
     enum class ContentType(val text: String) {
         TEXT_PLAIN("text/plain"),
         JSON("application/json"),
@@ -51,7 +65,7 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
         return pendingRequests.isNotEmpty()
     }
 
-    fun sendRequest(url: String, contentType: ContentType, request: String) {
+    fun sendRequest(url: String, contentType: ContentType, request: String, compressed : Boolean = false) {
         Log.v(this.javaClass.simpleName, "Sending request : " + request)
         val handler = Handler(Looper.getMainLooper()!!)
         Thread() {
@@ -64,21 +78,46 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
                         "Content-Type",
                         contentType.toString()
                     );
+
                     httpConnection.doOutput = true
 
-                    val bufferWriter = httpConnection.outputStream.bufferedWriter()
-                    bufferWriter.write(request)
-                    bufferWriter.flush()
+                    val outputStream : OutputStream = if(compressed) {
+                        httpConnection.setRequestProperty("X-Network", "CSD")
+                        httpConnection.setRequestProperty("X-Content-Encoding", "deflate")
 
-                    val str = StringBuilder()
-                    httpConnection.inputStream.bufferedReader().lines().forEach(str::append)
-                    Log.v(this.javaClass.simpleName, "API response: $str")
+                        DeflaterOutputStream(httpConnection.outputStream, Deflater(Deflater.DEFAULT_COMPRESSION, true))
+                    }else {
+                        DataOutputStream(httpConnection.outputStream)
+                    }
+
+
+                    try {
+                        outputStream.write(request.toByteArray(StandardCharsets.UTF_8))
+                        outputStream.flush()
+
+                    }catch (e : Exception){
+                        println(e.printStackTrace())
+                        //TODO log
+                    }finally {
+                        outputStream.close()
+                    }
+
+                    val inputStream : InputStream = if(compressed) {
+                        InflaterInputStream(httpConnection.inputStream, Inflater(true))
+                    }else {
+                        httpConnection.inputStream
+                    }
 
                     handler.post {
+                        val byteArray = inputStream.readBytes()
                         run {
-                            communicationEventListener?.handleServerResponse(str.toString(), contentType)
+                            communicationEventListener?.handleServerResponse(String(byteArray), contentType, byteArray.size)
                         }
                     }
+
+
+
+
                 } catch (unknownHostEx: UnknownHostException) {
                     pendingRequests.add(Request(url, contentType, request))
                 } finally {
