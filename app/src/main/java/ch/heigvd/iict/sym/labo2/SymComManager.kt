@@ -55,7 +55,6 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
         XML("application/xml"),
         BUFFER_PROTO("application/protobuf");
 
-
         override fun toString(): String {
             return text
         }
