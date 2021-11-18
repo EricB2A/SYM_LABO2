@@ -48,8 +48,6 @@ class GraphQLActivity : AppCompatActivity() {
                 contentType: SymComManager.ContentType
             ) {
                 val jsonRoot: JsonObject = JsonParser.parseString(response).asJsonObject
-                jsonRoot.get("data")
-
                 val data: JsonObject = jsonRoot.get("data").asJsonObject
                 val findAllAuthors: JsonElement = data.get("findAllAuthors")
                 val authors: Array<Author> =
@@ -122,7 +120,7 @@ class GraphQLActivity : AppCompatActivity() {
                     this@GraphQLActivity,
                     "Veuillez sélectionner un auteur",
                     Toast.LENGTH_LONG
-                )
+                ).show()
             }
         }
     }
