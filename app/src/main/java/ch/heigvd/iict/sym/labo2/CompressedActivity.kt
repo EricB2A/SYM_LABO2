@@ -45,7 +45,7 @@ class CompressedActivity : AppCompatActivity() {
 
 
             sym.sendRequest(
-                "http://mobile.iict.ch/api/json",
+                SymComManager.Url.JSON,
                 SymComManager.ContentType.JSON,
                 gson.toJson(requestTextInput.text.toString()),
                 true
@@ -67,7 +67,7 @@ class CompressedActivity : AppCompatActivity() {
             })
 
             sym.sendRequest(
-                "http://mobile.iict.ch/api/json",
+                SymComManager.Url.JSON,
                 SymComManager.ContentType.JSON,
                 gson.toJson(requestTextInput.text.toString()),
             )

@@ -36,19 +36,6 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
         }, 5000, 5000);
     }
 
-    /**
-     * TODO: On pourrait utiliser un companions object :
-     * companion object {
-     * const val TXT_URL  = "http://mobile.iict.ch/api/txt"
-     * const val JSON_URL = "http://mobile.iict.ch/api/json"
-     * const val BASE_URL = "http://mobile.iict.ch/"
-
-     * const val CONTENT_TYPE_JSON = "application/json"
-     * const val CONTENT_TYPE_TEXT = "text/plain"
-     * }
-     *
-     * Accessible via SymComManager.TXT_URL
-     */
     enum class ContentType(val text: String) {
         TEXT_PLAIN("text/plain"),
         JSON("application/json"),
@@ -60,16 +47,30 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
         }
     }
 
+
+    enum class Url(val text: String) {
+        BASE("http://mobile.iict.ch/"),
+        TXT("http://mobile.iict.ch/api/txt"),
+        JSON("http://mobile.iict.ch/api/json"),
+        XML("http://mobile.iict.ch/api/xml"),
+        GRAPHQL("http://mobile.iict.ch/graphql"),
+        PROTOBUF("http://mobile.iict.ch/api/protobuf");
+
+        override fun toString(): String {
+            return text
+        }
+    }
+
     fun hasPendingRequest(): Boolean {
         return pendingRequests.isNotEmpty()
     }
 
-    fun sendRequest(url: String, contentType: ContentType, request: String, compressed : Boolean = false) {
+    fun sendRequest(url: Url, contentType: ContentType, request: String, compressed : Boolean = false) {
         Log.v(this.javaClass.simpleName, "Sending request : " + request)
         val handler = Handler(Looper.getMainLooper()!!)
         Thread() {
             run {
-                val urlObject = URL(url)
+                val urlObject = URL(url.toString())
                 val httpConnection = urlObject.openConnection() as HttpURLConnection;
                 try {
                     httpConnection.requestMethod = "POST"
@@ -89,14 +90,11 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
                         DataOutputStream(httpConnection.outputStream)
                     }
 
-
                     try {
                         outputStream.write(request.toByteArray(StandardCharsets.UTF_8))
                         outputStream.flush()
-
                     }catch (e : Exception){
-                        println(e.printStackTrace())
-                        //TODO log
+                        Log.e(this.javaClass.simpleName, e.printStackTrace().toString())
                     }finally {
                         outputStream.close()
                     }
@@ -113,8 +111,6 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
                             communicationEventListener?.handleServerResponse(String(byteArray), contentType, byteArray.size)
                         }
                     }
-
-
 
 
                 } catch (unknownHostEx: UnknownHostException) {

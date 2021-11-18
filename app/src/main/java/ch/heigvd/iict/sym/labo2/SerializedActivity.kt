@@ -68,11 +68,11 @@ class SerializedActivity : AppCompatActivity() {
         }
     }
 
-    private fun getUrl(contentType: SymComManager.ContentType): String {
-        return "http://mobile.iict.ch/api/" + when (contentType) {
-            SymComManager.ContentType.JSON -> "json"
-            SymComManager.ContentType.XML -> "xml"
-            SymComManager.ContentType.BUFFER_PROTO -> "protobuf"
+    private fun getUrl(contentType: SymComManager.ContentType): SymComManager.Url {
+        return when (contentType) {
+            SymComManager.ContentType.JSON -> SymComManager.Url.JSON
+            SymComManager.ContentType.XML -> SymComManager.Url.XML
+            SymComManager.ContentType.BUFFER_PROTO -> SymComManager.Url.PROTOBUF
             else -> throw Exception("No url")
         }
     }

@@ -25,7 +25,7 @@ class AsyncActivity : AppCompatActivity() {
         })
 
         sendBtn.setOnClickListener {
-            sym.sendRequest("http://mobile.iict.ch/api/txt", SymComManager.ContentType.TEXT_PLAIN, requestInput.text.toString())
+            sym.sendRequest(SymComManager.Url.TXT, SymComManager.ContentType.TEXT_PLAIN, requestInput.text.toString())
         }
     }
 }

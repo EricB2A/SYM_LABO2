@@ -45,7 +45,8 @@ class GraphQLActivity : AppCompatActivity() {
         val authorsSym = SymComManager(object : CommunicationEventListener {
             override fun handleServerResponse(
                 response: String,
-                contentType: SymComManager.ContentType
+                contentType: SymComManager.ContentType,
+                size: Int
             ) {
                 val jsonRoot: JsonObject = JsonParser.parseString(response).asJsonObject
                 val data: JsonObject = jsonRoot.get("data").asJsonObject
@@ -64,7 +65,8 @@ class GraphQLActivity : AppCompatActivity() {
         val booksSym = SymComManager(object : CommunicationEventListener {
             override fun handleServerResponse(
                 response: String,
-                contentType: SymComManager.ContentType
+                contentType: SymComManager.ContentType,
+                size: Int
             ) {
                 Log.d(this@GraphQLActivity.javaClass.simpleName, response)
                 val jsonRoot: JsonObject = JsonParser.parseString(response).asJsonObject
@@ -91,7 +93,7 @@ class GraphQLActivity : AppCompatActivity() {
             }
         })
         authorsSym.sendRequest(
-            "http://mobile.iict.ch/graphql",
+            SymComManager.Url.GRAPHQL,
             SymComManager.ContentType.JSON,
             authorQuery,
         )
@@ -109,7 +111,7 @@ class GraphQLActivity : AppCompatActivity() {
                     "{\"query\": \"{findAuthorById(id:${authorsList[position].id}){books{title}}}\"}"
                 )
                 booksSym.sendRequest(
-                    "http://mobile.iict.ch/graphql",
+                    SymComManager.Url.GRAPHQL,
                     SymComManager.ContentType.JSON,
                     "{\"query\": \"{findAuthorById(id:${authorsList[position].id}){books{title}}}\"}",
                 )

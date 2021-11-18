@@ -26,7 +26,7 @@ class DeferredActivity : AppCompatActivity() {
         })
         sendBtn.setOnClickListener {
             sym.sendRequest(
-                "http://mobile.iict.ch/api/txt",
+                SymComManager.Url.TXT,
                 SymComManager.ContentType.TEXT_PLAIN,
                 requestInput.text.toString()
             )
