@@ -51,7 +51,6 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
 
 
     enum class Url(val text: String) {
-        BASE("http://mobile.iict.ch/"),
         TXT("http://mobile.iict.ch/api/txt"),
         JSON("http://mobile.iict.ch/api/json"),
         XML("http://mobile.iict.ch/api/xml"),
@@ -107,16 +106,34 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
                         httpConnection.inputStream
                     }
 
+                    /*
+                    if(compressed){
+
+
+                     */
                     handler.post {
-                        val byteArray = inputStream.readBytes()
                         run {
-                            communicationEventListener?.handleServerResponse(String(byteArray), contentType, byteArray.size)
+                            communicationEventListener?.handleServerResponse(String(inputStream.readBytes()), contentType);
                         }
                     }
+                    /*
+                    }else {
+                        val str = StringBuilder()
+                        httpConnection.inputStream.bufferedReader().lines().forEach(str::append)
+                        Log.v(this.javaClass.simpleName, "API response: $str")
+
+                        handler.post {
+                            run {
+                                communicationEventListener?.handleServerResponse(str.toString(), contentType)
+                            }
+                        }
+
+                    }
+
+                     */
 
 
                 } catch (unknownHostEx: UnknownHostException) {
-                    println("Hote pas atteignable")
                     pendingRequests.add(Request(url, contentType, request))
                 } finally {
                     httpConnection.disconnect()

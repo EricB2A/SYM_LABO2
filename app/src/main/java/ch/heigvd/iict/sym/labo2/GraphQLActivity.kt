@@ -45,8 +45,7 @@ class GraphQLActivity : AppCompatActivity() {
         val authorsSym = SymComManager(object : CommunicationEventListener {
             override fun handleServerResponse(
                 response: String,
-                contentType: SymComManager.ContentType,
-                size: Int
+                contentType: SymComManager.ContentType
             ) {
                 val jsonRoot: JsonObject = JsonParser.parseString(response).asJsonObject
                 val data: JsonObject = jsonRoot.get("data").asJsonObject
@@ -68,8 +67,7 @@ class GraphQLActivity : AppCompatActivity() {
         val booksSym = SymComManager(object : CommunicationEventListener {
             override fun handleServerResponse(
                 response: String,
-                contentType: SymComManager.ContentType,
-                size: Int
+                contentType: SymComManager.ContentType
             ) {
                 Log.d(this@GraphQLActivity.javaClass.simpleName, response)
                 val jsonRoot: JsonObject = JsonParser.parseString(response).asJsonObject
@@ -97,10 +95,11 @@ class GraphQLActivity : AppCompatActivity() {
                 bookListAdapter.notifyDataSetChanged()
             }
         })
+
         authorsSym.sendRequest(
             SymComManager.Url.GRAPHQL,
             SymComManager.ContentType.JSON,
-            authorQuery,
+            authorQuery
         )
 
         authorSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {

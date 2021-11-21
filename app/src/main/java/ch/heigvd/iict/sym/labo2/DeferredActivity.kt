@@ -16,8 +16,7 @@ class DeferredActivity : AppCompatActivity() {
         val sym = SymComManager(object : CommunicationEventListener {
             override fun handleServerResponse(
                 response: String,
-                contentType: SymComManager.ContentType,
-                size: Int
+                contentType: SymComManager.ContentType
             ) {
                 val text: String = responseOutput.text.toString()
                 val builder = StringBuilder()

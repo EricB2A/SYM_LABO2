@@ -9,8 +9,6 @@ import android.widget.RadioGroup
 import android.widget.TextView
 import ch.heigvd.iict.sym.labo2.directory.Directory
 import ch.heigvd.iict.sym.labo2.directory.DirectoryUtils
-import ch.heigvd.iict.sym.labo2.directory.Person
-import ch.heigvd.iict.sym.labo2.directory.Phone
 import ch.heigvd.iict.sym.protobuf.DirectoryOuterClass
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -33,8 +31,7 @@ class SerializedActivity : AppCompatActivity() {
         val symCom: SymComManager = SymComManager(object : CommunicationEventListener {
             override fun handleServerResponse(
                 response: String,
-                contentType: SymComManager.ContentType,
-                size: Int
+                contentType: SymComManager.ContentType
             ) {
                  val responseDir = parseResponse(response, contentType)
                 val builder = StringBuilder()

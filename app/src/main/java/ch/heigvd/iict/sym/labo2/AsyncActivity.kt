@@ -17,8 +17,7 @@ class AsyncActivity : AppCompatActivity() {
         val sym = SymComManager(object : CommunicationEventListener {
             override fun handleServerResponse(
                 response: String,
-                contentType: SymComManager.ContentType,
-                size: Int
+                contentType: SymComManager.ContentType
             ) {
                 responseOutput.text = response
             }

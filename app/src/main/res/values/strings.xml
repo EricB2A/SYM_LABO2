@@ -23,5 +23,4 @@
     <string name="personName">Nom de la personne</string>
     <string name="compress_btn_compress">Envoi compressé</string>
     <string name="compress_btn_uncompress">Envoi non-compressé</string>
-    <string name="requestResponseSizeHint">Taille de la réponse</string>
 </resources>

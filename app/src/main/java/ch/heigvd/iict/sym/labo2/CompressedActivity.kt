@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import ch.heigvd.iict.sym.labo2.directory.DirectoryUtils
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
@@ -16,7 +15,6 @@ class CompressedActivity : AppCompatActivity() {
     lateinit var sendCompressedBtn : Button
     lateinit var sendUncompressedBtn : Button
     lateinit var responseOutput : TextView
-    lateinit var responseSizeOutput : TextView
 
     val gson: Gson = GsonBuilder().create()
 
@@ -28,26 +26,24 @@ class CompressedActivity : AppCompatActivity() {
         sendCompressedBtn = findViewById(R.id.sendCompressedBtn)
         sendUncompressedBtn = findViewById(R.id.sendUncompressedBtn)
         responseOutput = findViewById(R.id.responseTextOutput)
-        responseSizeOutput = findViewById(R.id.responseSizeText)
 
         sendCompressedBtn.setOnClickListener {
             val sym = SymComManager(object : CommunicationEventListener {
                 override fun handleServerResponse(
                     response: String,
-                    contentType: SymComManager.ContentType,
-                    size: Int
+                    contentType: SymComManager.ContentType
                 ) {
-                    responseOutput.text = gson.fromJson(response, String::class.java)
-                    responseSizeOutput.text = size.toString()
+                    responseOutput.text = response;
 
                 }
             })
 
-
+            // Pour l'envoi compressé, on a qu'un argument à ajouter : compressed.
             sym.sendRequest(
                 SymComManager.Url.JSON,
                 SymComManager.ContentType.JSON,
-                gson.toJson(requestTextInput.text.toString()),
+                // gson.toJson(requestTextInput.text.toString()),
+                requestTextInput.text.toString(),
                 true
             )
         }
@@ -56,18 +52,17 @@ class CompressedActivity : AppCompatActivity() {
             val sym = SymComManager(object : CommunicationEventListener {
                 override fun handleServerResponse(
                     response: String,
-                    contentType: SymComManager.ContentType,
-                    size: Int
+                    contentType: SymComManager.ContentType
                 ) {
-                    responseOutput.text = gson.fromJson(response, String::class.java)
-                    responseSizeOutput.text = size.toString()
+                    responseOutput.text = response;
                 }
             })
 
             sym.sendRequest(
-                SymComManager.Url.JSON,
-                SymComManager.ContentType.JSON,
-                gson.toJson(requestTextInput.text.toString()),
+                SymComManager.Url.TXT,
+                SymComManager.ContentType.TEXT_PLAIN,
+                //gson.toJson(requestTextInput.text.toString()),
+                requestTextInput.text.toString()
             )
         }
 
