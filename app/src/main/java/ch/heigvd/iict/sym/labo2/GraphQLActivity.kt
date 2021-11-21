@@ -1,3 +1,4 @@
+// Auteurs: Ilias Goujgali, Eric Bousbaa, Guillaume Laubscher
 package ch.heigvd.iict.sym.labo2
 
 import android.annotation.SuppressLint
@@ -17,36 +18,48 @@ import ch.heigvd.iict.sym.labo2.booklibrary.Book
 
 
 class GraphQLActivity : AppCompatActivity() {
-    lateinit var authorSpinner: Spinner;
-    lateinit var booksListView: ListView;
-    val gson: Gson = GsonBuilder().create()
-    val authorsNamesList: MutableList<String> = mutableListOf()
-    val authorsList: MutableList<Author> = mutableListOf()
-    val booksList: MutableList<String> = mutableListOf()
+    private lateinit var authorSpinner: Spinner;
+    private lateinit var booksListView: ListView;
+    private val gson: Gson = GsonBuilder().create()
+
+    // Utilisation d'une liste pour afficher le contenu dans la widget
+    // L'autre liste est utilisé pour garder l'objet Author afin d'avoir accès à son id.
+    private val authorsNamesList: MutableList<String> = mutableListOf()
+    private val authorsList: MutableList<Author> = mutableListOf()
+
+    private val booksList: MutableList<String> = mutableListOf()
+    private val authorQuery: String = "{\"query\": \"{findAllAuthors{id,name}}\"}"
 
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_graphql)
+
         authorSpinner = findViewById(R.id.authorSpinner)
         booksListView = findViewById(R.id.booksList)
+
+        // Adapter pour màj la liste dropdown des auteurs
         val authorSpinnerAdapter: ArrayAdapter<String> = ArrayAdapter<String>(
             this,
             android.R.layout.simple_spinner_dropdown_item, authorsNamesList
         )
         authorSpinner.adapter = authorSpinnerAdapter
+
+        // Adapter pour màj la liste des livres d'un auteur
         val bookListAdapter: ArrayAdapter<String> = ArrayAdapter<String>(
             this,
             android.R.layout.simple_list_item_1, booksList
         )
         booksListView.adapter = bookListAdapter
 
-        val authorQuery: String = "{\"query\": \"{findAllAuthors{id,name}}\"}"
+
+        // SymCom utiliser pour la récupération des auteurs
         val authorsSym = SymComManager(object : CommunicationEventListener {
             override fun handleServerResponse(
                 response: String,
                 contentType: SymComManager.ContentType
             ) {
+                // On parse le contenu reçu et
                 val jsonRoot: JsonObject = JsonParser.parseString(response).asJsonObject
                 val data: JsonObject = jsonRoot.get("data").asJsonObject
                 val findAllAuthors: JsonElement = data.get("findAllAuthors")
@@ -60,10 +73,10 @@ class GraphQLActivity : AppCompatActivity() {
                 for (author in authors) {
                     authorsNamesList.add(author.name);
                 }
-                Log.v(this@GraphQLActivity.javaClass.simpleName, authorsNamesList.toString())
                 authorSpinnerAdapter.notifyDataSetChanged()
             }
         })
+        // SymCom utilisé pour la récupération des livres d'un auteur
         val booksSym = SymComManager(object : CommunicationEventListener {
             override fun handleServerResponse(
                 response: String,
@@ -95,13 +108,14 @@ class GraphQLActivity : AppCompatActivity() {
                 bookListAdapter.notifyDataSetChanged()
             }
         })
-
+        // On récupère les auteurs à la création de l'activité directement
         authorsSym.sendRequest(
             SymComManager.Url.GRAPHQL,
             SymComManager.ContentType.JSON,
             authorQuery
         )
 
+        // Gestion des interactions avec l'utilisateur pour la liste dropdown (listes des auteurs)
         authorSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -109,11 +123,7 @@ class GraphQLActivity : AppCompatActivity() {
                 position: Int,
                 id: Long
             ) {
-
-                Log.d(
-                    this@GraphQLActivity.javaClass.simpleName,
-                    "{\"query\": \"{findAuthorById(id:${authorsList[position].id}){books{title}}}\"}"
-                )
+                // Une fois un auteur sélectionner, on récupères ses livres
                 booksSym.sendRequest(
                     SymComManager.Url.GRAPHQL,
                     SymComManager.ContentType.JSON,

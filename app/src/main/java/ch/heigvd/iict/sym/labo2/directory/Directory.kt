@@ -7,8 +7,11 @@ import java.io.ByteArrayOutputStream
 import java.io.Serializable
 import java.util.*
 
-@Root(name = "directory")
-class Directory @JvmOverloads constructor(
+/**
+ * Class Directory utiliser dans l'activité de serialisation
+ */
+@Root(name = "directory") // Root lors d'une séralisation XML
+class Directory @JvmOverloads constructor( //@JvmOverloads permet de fournir (entre autre) un constructeur vide pour la déserialisation de Simple.
     @field:ElementList(inline = true)
     var directory: MutableList<Person> = mutableListOf()
 ) : Serializable {

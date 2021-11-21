@@ -1,3 +1,4 @@
+// Auteurs: Ilias Goujgali, Eric Bousbaa, Guillaume Laubscher
 package ch.heigvd.iict.sym.labo2
 
 import androidx.appcompat.app.AppCompatActivity
@@ -6,6 +7,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 
+/**
+ * Activité simple des requêtes asynchrones
+ */
 class AsyncActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

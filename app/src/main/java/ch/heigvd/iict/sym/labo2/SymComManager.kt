@@ -1,3 +1,5 @@
+// Auteurs: Ilias Goujgali, Eric Bousbaa, Guillaume Laubscher
+
 package ch.heigvd.iict.sym.labo2
 
 import android.os.Handler
@@ -13,13 +15,17 @@ import java.nio.charset.StandardCharsets
 import java.util.*
 import java.util.zip.*
 
+/**
+ * Méthodes permettant d'envoyer des requêtes de manière asynchrone
+ */
 class SymComManager(var communicationEventListener: CommunicationEventListener? = null) {
 
+    // Collection des requetes ayant echoué et donc qui seront à renvoyer
     private var pendingRequests: MutableList<Request> = arrayListOf();
     init {
+        // On renvoie les requetes ayant échoué toutes les 5 secondes
         Timer().schedule(object : TimerTask() {
             override fun run() {
-
                 /*
                     Note : pas de gestion de concurrence ici.
                  */
@@ -49,7 +55,6 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
         }
     }
 
-
     enum class Url(val text: String) {
         TXT("http://mobile.iict.ch/api/txt"),
         JSON("http://mobile.iict.ch/api/json"),
@@ -62,26 +67,33 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
         }
     }
 
+    /**
+     * Retourne vrai s'il y a des requetes à renvoyer
+     */
     fun hasPendingRequest(): Boolean {
         return pendingRequests.isNotEmpty()
     }
 
+    /**
+     * Méthodes d'envoie des requetes
+     */
     fun sendRequest(url: Url, contentType: ContentType, request: String, compressed : Boolean = false) {
-        Log.v(this.javaClass.simpleName, "Sending request : " + request)
         val handler = Handler(Looper.getMainLooper()!!)
         Thread() {
             run {
                 val urlObject = URL(url.toString())
                 val httpConnection = urlObject.openConnection() as HttpURLConnection;
                 try {
+
+                    // Prépration de la requête
                     httpConnection.requestMethod = "POST"
                     httpConnection.setRequestProperty(
                         "Content-Type",
                         contentType.toString()
                     );
-
                     httpConnection.doOutput = true
 
+                    // Option à la requête si compressée
                     val outputStream : OutputStream = if(compressed) {
                         httpConnection.setRequestProperty("X-Network", "CSD")
                         httpConnection.setRequestProperty("X-Content-Encoding", "deflate")
@@ -91,6 +103,7 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
                         DataOutputStream(httpConnection.outputStream)
                     }
 
+                    // Envoie de la requête
                     try {
                         outputStream.write(request.toByteArray(StandardCharsets.UTF_8))
                         outputStream.flush()
@@ -100,12 +113,14 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
                         outputStream.close()
                     }
 
+                    // Option de lecture si réponse compressée
                     val inputStream : InputStream = if(compressed) {
                         InflaterInputStream(httpConnection.inputStream, Inflater(true))
                     }else {
                         httpConnection.inputStream
                     }
 
+                    // Envoie de la réponse au GUI
                     val s = String(inputStream.readBytes())
                     handler.post {
                         run {
@@ -114,6 +129,7 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
                     }
 
                 } catch (unknownHostEx: UnknownHostException) {
+                    // En cas d'erreur, on rajoute la requete à pendingRequest pour qu'elle soit renvoyer plus tard
                     pendingRequests.add(Request(url, contentType, request))
                 } finally {
                     httpConnection.disconnect()

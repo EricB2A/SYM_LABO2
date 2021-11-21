@@ -1,3 +1,4 @@
+// Auteurs: Ilias Goujgali, Eric Bousbaa, Guillaume Laubscher
 package ch.heigvd.iict.sym.labo2
 
 import android.content.Intent
@@ -5,6 +6,9 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 
+/**
+ * Activité principale contenant les différents boutons amenant aux activités du labo
+ */
 class MainActivity : AppCompatActivity() {
 
     private lateinit var async: Button

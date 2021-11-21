@@ -1,6 +1,10 @@
 package ch.heigvd.iict.sym.labo2.directory
 
 
+/**
+ * Classe utiliaire pour générer un faux directory, seul le nom de la personne est à fournir
+ * dans un soucis de simplicité
+ */
 class DirectoryUtils {
     companion object {
         /**

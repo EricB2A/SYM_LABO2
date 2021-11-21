@@ -3,6 +3,9 @@ package ch.heigvd.iict.sym.labo2.booklibrary
 import java.math.BigInteger
 import java.util.concurrent.Flow
 
+/**
+ * Class Book utilisé pour la déserialisation des livres dans GraphQl
+ */
 class Book(
     var id: BigInteger,
     var title: String,

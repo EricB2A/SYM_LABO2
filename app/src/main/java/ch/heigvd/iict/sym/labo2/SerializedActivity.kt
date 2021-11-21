@@ -1,3 +1,4 @@
+// Auteurs: Ilias Goujgali, Eric Bousbaa, Guillaume Laubscher
 package ch.heigvd.iict.sym.labo2
 
 import androidx.appcompat.app.AppCompatActivity
@@ -16,9 +17,13 @@ import org.simpleframework.xml.core.Persister
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 
+/**
+ * Cette activité propose à l'utilisateur d'envoyer un message serialiser de 3 manières différentes
+ */
 class SerializedActivity : AppCompatActivity() {
     val gson: Gson = GsonBuilder().create()
     val xmlSerializer: Persister = Persister()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,19 +33,18 @@ class SerializedActivity : AppCompatActivity() {
         val sendBtn: Button = findViewById(R.id.sendSerialBtn)
         val responseTxtView: TextView = findViewById(R.id.responseTextOutput)
         val requestTxtView: EditText = findViewById(R.id.requestTextInput)
+
         val symCom: SymComManager = SymComManager(object : CommunicationEventListener {
             override fun handleServerResponse(
                 response: String,
                 contentType: SymComManager.ContentType
             ) {
-                 val responseDir = parseResponse(response, contentType)
+                val responseDir = parseResponse(response, contentType)
                 val builder = StringBuilder()
                 builder.append("nom de la personne ")
                         .append(responseDir.directory[0].name)
 
                 responseTxtView.text = builder.toString()
-
-
             }
         })
 
@@ -58,6 +62,9 @@ class SerializedActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Méthode permettant le parsing d'une string en Directory
+     */
     private fun parseResponse(response: String, contentType: SymComManager.ContentType): Directory {
         return when (contentType) {
             SymComManager.ContentType.JSON -> gson.fromJson(
@@ -75,6 +82,9 @@ class SerializedActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Retourne la bonne URL en fonction du type de serialisation
+     */
     private fun getUrl(contentType: SymComManager.ContentType): SymComManager.Url {
         return when (contentType) {
             SymComManager.ContentType.JSON -> SymComManager.Url.JSON

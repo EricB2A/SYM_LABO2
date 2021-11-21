@@ -1,3 +1,4 @@
+// Auteurs: Ilias Goujgali, Eric Bousbaa, Guillaume Laubscher
 package ch.heigvd.iict.sym.labo2.directory
 
 import org.simpleframework.xml.Attribute
@@ -6,6 +7,10 @@ import org.simpleframework.xml.Serializer
 import org.simpleframework.xml.Text
 import java.io.Serializable
 
+
+/**
+ * Classe phone utilisé pour l'activité de serialisation.
+ */
 @Root
 class Phone @JvmOverloads  constructor(
     @field:Text

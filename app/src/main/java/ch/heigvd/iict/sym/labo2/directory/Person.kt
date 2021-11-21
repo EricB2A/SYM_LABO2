@@ -6,6 +6,9 @@ import org.simpleframework.xml.Order
 import org.simpleframework.xml.Path
 import java.io.Serializable
 
+/**
+ * Classe personne utilisé pour l'activité de serialisation.
+ */
 @Order(elements=["name"])
 class Person @JvmOverloads constructor(
     @Path("name")

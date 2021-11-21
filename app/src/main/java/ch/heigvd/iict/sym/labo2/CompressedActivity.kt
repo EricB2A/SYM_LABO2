@@ -1,3 +1,4 @@
+// Auteurs: Ilias Goujgali, Eric Bousbaa, Guillaume Laubscher
 package ch.heigvd.iict.sym.labo2
 
 import androidx.appcompat.app.AppCompatActivity
@@ -8,7 +9,9 @@ import android.widget.TextView
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
-
+/**
+ * Activité montrant l'utilisation de la compression.
+ */
 class CompressedActivity : AppCompatActivity() {
 
     lateinit var requestTextInput : EditText
@@ -27,6 +30,7 @@ class CompressedActivity : AppCompatActivity() {
         sendUncompressedBtn = findViewById(R.id.sendUncompressedBtn)
         responseOutput = findViewById(R.id.responseTextOutput)
 
+        // Envoie d'une requête compressé lors du clique du bouton associé
         sendCompressedBtn.setOnClickListener {
             val sym = SymComManager(object : CommunicationEventListener {
                 override fun handleServerResponse(
@@ -34,7 +38,6 @@ class CompressedActivity : AppCompatActivity() {
                     contentType: SymComManager.ContentType
                 ) {
                     responseOutput.text = response;
-
                 }
             })
 
@@ -42,12 +45,12 @@ class CompressedActivity : AppCompatActivity() {
             sym.sendRequest(
                 SymComManager.Url.TXT,
                 SymComManager.ContentType.TEXT_PLAIN,
-                // gson.toJson(requestTextInput.text.toString()),
                 requestTextInput.text.toString(),
                 true
             )
         }
 
+        // Envoie d'une requête non-compressé lors du clique du bouton associé
         sendUncompressedBtn.setOnClickListener {
             val sym = SymComManager(object : CommunicationEventListener {
                 override fun handleServerResponse(
@@ -61,7 +64,6 @@ class CompressedActivity : AppCompatActivity() {
             sym.sendRequest(
                 SymComManager.Url.TXT,
                 SymComManager.ContentType.TEXT_PLAIN,
-                //gson.toJson(requestTextInput.text.toString()),
                 requestTextInput.text.toString()
             )
         }
