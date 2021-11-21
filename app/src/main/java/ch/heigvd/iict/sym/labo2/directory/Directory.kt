@@ -23,16 +23,14 @@ class Directory @JvmOverloads constructor( //@JvmOverloads permet de fournir (en
 
         for (p in this.directory) {
             person.clear()
-                .setName(p.name)
-                .setFirstname(p.firstname)
+                .setName(p.name).firstname = p.firstname
             if(p.middlename.isNotBlank()) {
-                person.setMiddlename(p.middlename)
+                person.middlename = p.middlename
             }
             for (ph in p.phones) {
                 phone.clear()
                     .setType(DirectoryOuterClass.Phone.Type.valueOf(ph.type.uppercase(
-                        Locale.getDefault())))
-                    .setNumber(ph.number)
+                        Locale.getDefault()))).number = ph.number
                 person.addPhone(phone.build())
             }
             directory.addResults(person.build())

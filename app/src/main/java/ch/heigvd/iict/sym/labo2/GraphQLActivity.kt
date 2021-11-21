@@ -18,8 +18,8 @@ import ch.heigvd.iict.sym.labo2.booklibrary.Book
 
 
 class GraphQLActivity : AppCompatActivity() {
-    private lateinit var authorSpinner: Spinner;
-    private lateinit var booksListView: ListView;
+    private lateinit var authorSpinner: Spinner
+    private lateinit var booksListView: ListView
     private val gson: Gson = GsonBuilder().create()
 
     // Utilisation d'une liste pour afficher le contenu dans la widget
@@ -71,7 +71,7 @@ class GraphQLActivity : AppCompatActivity() {
                     en utilisant l'attribut nom.
                  */
                 for (author in authors) {
-                    authorsNamesList.add(author.name);
+                    authorsNamesList.add(author.name)
                 }
                 authorSpinnerAdapter.notifyDataSetChanged()
             }
@@ -97,13 +97,12 @@ class GraphQLActivity : AppCompatActivity() {
                     Note : un stream serait également intéressant ici.
                  */
                 for (book in books) {
-                    booksList.add(book.title);
+                    booksList.add(book.title)
                     Log.d(
                         this@GraphQLActivity.javaClass.simpleName,
                         "*"
                     )
                 }
-
 
                 bookListAdapter.notifyDataSetChanged()
             }

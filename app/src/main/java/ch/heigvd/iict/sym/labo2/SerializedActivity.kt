@@ -95,17 +95,17 @@ class SerializedActivity : AppCompatActivity() {
     }
 
     /**
-     * Serialize a directory with the appropriate
+     * Seralize le directory fourni dans le content-type spécifié 
      */
     private fun serialize(contentType: SymComManager.ContentType, directory: Directory): String {
 
         return when (contentType) {
-            SymComManager.ContentType.JSON -> gson.toJson(directory);
+            SymComManager.ContentType.JSON -> gson.toJson(directory)
             SymComManager.ContentType.XML -> {
-                val os = ByteArrayOutputStream();
-                xmlSerializer.write(directory, os);
+                val os = ByteArrayOutputStream()
+                xmlSerializer.write(directory, os)
                 return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                        "<!DOCTYPE directory SYSTEM \"http://mobile.iict.ch/directory.dtd\">" + os.toString();
+                        "<!DOCTYPE directory SYSTEM \"http://mobile.iict.ch/directory.dtd\">" + os.toString()
             }
             SymComManager.ContentType.BUFFER_PROTO -> directory.toProtoBuf()
             else -> throw Exception("Content type invalid")

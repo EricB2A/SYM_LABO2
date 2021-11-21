@@ -13,7 +13,10 @@ import java.net.URL
 import java.net.UnknownHostException
 import java.nio.charset.StandardCharsets
 import java.util.*
-import java.util.zip.*
+import java.util.zip.Deflater
+import java.util.zip.DeflaterOutputStream
+import java.util.zip.Inflater
+import java.util.zip.InflaterInputStream
 
 /**
  * Méthodes permettant d'envoyer des requêtes de manière asynchrone
@@ -21,7 +24,8 @@ import java.util.zip.*
 class SymComManager(var communicationEventListener: CommunicationEventListener? = null) {
 
     // Collection des requetes ayant echoué et donc qui seront à renvoyer
-    private var pendingRequests: MutableList<Request> = arrayListOf();
+    private var pendingRequests: MutableList<Request> = arrayListOf()
+
     init {
         // On renvoie les requetes ayant échoué toutes les 5 secondes
         Timer().schedule(object : TimerTask() {
@@ -31,7 +35,7 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
                  */
                 if (hasPendingRequest()) {
                     // copy pending request
-                    val reqToSend = pendingRequests.toMutableList();
+                    val reqToSend = pendingRequests.toMutableList()
 
                     // clear la liste, si la requete echoue à nouveau alors elle sera à nouveau ajouter
                     // par sendRequest
@@ -41,7 +45,7 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
                     }
                 }
             }
-        }, 5000, 5000);
+        }, 5000, 5000)
     }
 
     enum class ContentType(val text: String) {
@@ -79,10 +83,10 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
      */
     fun sendRequest(url: Url, contentType: ContentType, request: String, compressed : Boolean = false) {
         val handler = Handler(Looper.getMainLooper()!!)
-        Thread() {
+        Thread {
             run {
                 val urlObject = URL(url.toString())
-                val httpConnection = urlObject.openConnection() as HttpURLConnection;
+                val httpConnection = urlObject.openConnection() as HttpURLConnection
                 try {
 
                     // Prépration de la requête
@@ -90,7 +94,7 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
                     httpConnection.setRequestProperty(
                         "Content-Type",
                         contentType.toString()
-                    );
+                    )
                     httpConnection.doOutput = true
 
                     // Option à la requête si compressée
@@ -124,7 +128,7 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
                     val s = String(inputStream.readBytes())
                     handler.post {
                         run {
-                            communicationEventListener?.handleServerResponse(s, contentType);
+                            communicationEventListener?.handleServerResponse(s, contentType)
                         }
                     }
 

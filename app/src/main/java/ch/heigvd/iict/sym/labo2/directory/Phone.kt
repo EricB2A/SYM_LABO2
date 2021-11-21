@@ -30,6 +30,6 @@ class Phone @JvmOverloads  constructor(
         }
     }
     override fun toString(): String {
-        return number;
+        return number
     }
 }

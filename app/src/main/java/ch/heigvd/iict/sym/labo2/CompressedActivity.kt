@@ -37,7 +37,7 @@ class CompressedActivity : AppCompatActivity() {
                     response: String,
                     contentType: SymComManager.ContentType
                 ) {
-                    responseOutput.text = response;
+                    responseOutput.text = response
                 }
             })
 
@@ -57,7 +57,7 @@ class CompressedActivity : AppCompatActivity() {
                     response: String,
                     contentType: SymComManager.ContentType
                 ) {
-                    responseOutput.text = response;
+                    responseOutput.text = response
                 }
             })
 

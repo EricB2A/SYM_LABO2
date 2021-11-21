@@ -7,6 +7,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 
+/**
+ * Activité pour l'envoyant des requêtes en différées. Il faut couper la connexion internet du téléphone
+ */
 class DeferredActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,11 +32,13 @@ class DeferredActivity : AppCompatActivity() {
 
             }
         })
+        // Envoie de la requête
         sendBtn.setOnClickListener {
             sym.sendRequest(
                 SymComManager.Url.TXT,
                 SymComManager.ContentType.TEXT_PLAIN,
-                requestInput.text.toString()
+                requestInput.text.toString(),
+                false,
             )
         }
     }

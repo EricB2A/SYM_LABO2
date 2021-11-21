@@ -16,6 +16,4 @@ class Book(
     var publication_date: String,
     var publisher: String,
     var text_reviews_count: Int
-) {
-
-}
+)

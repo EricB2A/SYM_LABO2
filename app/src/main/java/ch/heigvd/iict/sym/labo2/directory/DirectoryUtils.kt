@@ -11,7 +11,7 @@ class DirectoryUtils {
          * Genère une liste de Phone
          */
         fun generatePhone(): MutableList<Phone> {
-            val phone1 = Phone("012798321", Phone.PhoneType.HOME.toString());
+            val phone1 = Phone("012798321", Phone.PhoneType.HOME.toString())
             val phone2 = Phone("012421412", Phone.PhoneType.WORK.toString())
             return mutableListOf(phone1, phone2)
         }
@@ -28,7 +28,7 @@ class DirectoryUtils {
          * Genère un annuaire Directory
          */
         fun generateDirectory(name: String): Directory {
-            return Directory(generatePeople(name));
+            return Directory(generatePeople(name))
         }
     }
 }
