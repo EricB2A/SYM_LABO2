@@ -106,32 +106,12 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
                         httpConnection.inputStream
                     }
 
-                    /*
-                    if(compressed){
-
-
-                     */
+                    val s = String(inputStream.readBytes())
                     handler.post {
                         run {
-                            communicationEventListener?.handleServerResponse(String(inputStream.readBytes()), contentType);
+                            communicationEventListener?.handleServerResponse(s, contentType);
                         }
                     }
-                    /*
-                    }else {
-                        val str = StringBuilder()
-                        httpConnection.inputStream.bufferedReader().lines().forEach(str::append)
-                        Log.v(this.javaClass.simpleName, "API response: $str")
-
-                        handler.post {
-                            run {
-                                communicationEventListener?.handleServerResponse(str.toString(), contentType)
-                            }
-                        }
-
-                    }
-
-                     */
-
 
                 } catch (unknownHostEx: UnknownHostException) {
                     pendingRequests.add(Request(url, contentType, request))
