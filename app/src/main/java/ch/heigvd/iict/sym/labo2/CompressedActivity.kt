@@ -40,8 +40,8 @@ class CompressedActivity : AppCompatActivity() {
 
             // Pour l'envoi compressé, on a qu'un argument à ajouter : compressed.
             sym.sendRequest(
-                SymComManager.Url.JSON,
-                SymComManager.ContentType.JSON,
+                SymComManager.Url.TXT,
+                SymComManager.ContentType.TEXT_PLAIN,
                 // gson.toJson(requestTextInput.text.toString()),
                 requestTextInput.text.toString(),
                 true
