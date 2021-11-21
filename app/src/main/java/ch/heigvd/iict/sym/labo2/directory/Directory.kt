@@ -1,3 +1,4 @@
+// Auteurs: Ilias Goujgali, Eric Bousbaa, Guillaume Laubscher
 package ch.heigvd.iict.sym.labo2.directory
 
 import ch.heigvd.iict.sym.protobuf.DirectoryOuterClass

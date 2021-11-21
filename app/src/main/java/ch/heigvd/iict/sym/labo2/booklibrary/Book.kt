@@ -1,3 +1,4 @@
+// Auteurs: Ilias Goujgali, Eric Bousbaa, Guillaume Laubscher
 package ch.heigvd.iict.sym.labo2.booklibrary
 
 import java.math.BigInteger

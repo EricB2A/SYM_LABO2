@@ -3,7 +3,6 @@ package ch.heigvd.iict.sym.labo2
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.RadioGroup
@@ -48,9 +47,7 @@ class SerializedActivity : AppCompatActivity() {
             }
         })
 
-        Log.v(this.javaClass.simpleName, "Send button clicked")
         sendBtn.setOnClickListener {
-            Log.v(this.javaClass.simpleName, "Send button clicked")
             symCom.sendRequest(
                 getUrl(getContentType(serializationRadioGroup)),
                 getContentType(serializationRadioGroup),
@@ -95,7 +92,7 @@ class SerializedActivity : AppCompatActivity() {
     }
 
     /**
-     * Seralize le directory fourni dans le content-type spécifié 
+     * Seralize le directory fourni dans le content-type spécifié
      */
     private fun serialize(contentType: SymComManager.ContentType, directory: Directory): String {
 

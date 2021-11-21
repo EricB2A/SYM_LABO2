@@ -82,26 +82,17 @@ class GraphQLActivity : AppCompatActivity() {
                 response: String,
                 contentType: SymComManager.ContentType
             ) {
-                Log.d(this@GraphQLActivity.javaClass.simpleName, response)
                 val jsonRoot: JsonObject = JsonParser.parseString(response).asJsonObject
                 val data: JsonObject = jsonRoot.get("data").asJsonObject
                 val author: JsonObject = data.get("findAuthorById").asJsonObject
                 val jsonBooks: JsonElement = author.get("books")
                 val books: Array<Book> = gson.fromJson(jsonBooks, Array<Book>::class.java)
-                Log.d(
-                    this@GraphQLActivity.javaClass.simpleName, "===>" +
-                            books[0].title + " " + books.size
-                )
                 booksList.clear()
                 /*
                     Note : un stream serait également intéressant ici.
                  */
                 for (book in books) {
                     booksList.add(book.title)
-                    Log.d(
-                        this@GraphQLActivity.javaClass.simpleName,
-                        "*"
-                    )
                 }
 
                 bookListAdapter.notifyDataSetChanged()
