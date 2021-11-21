@@ -11,9 +11,11 @@ import ch.heigvd.iict.sym.labo2.directory.Directory
 import ch.heigvd.iict.sym.labo2.directory.DirectoryUtils
 import ch.heigvd.iict.sym.labo2.directory.Person
 import ch.heigvd.iict.sym.labo2.directory.Phone
+import ch.heigvd.iict.sym.protobuf.DirectoryOuterClass
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import org.simpleframework.xml.core.Persister
+import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 
 class SerializedActivity : AppCompatActivity() {
@@ -63,7 +65,10 @@ class SerializedActivity : AppCompatActivity() {
             SymComManager.ContentType.XML -> {
                 return xmlSerializer.read(Directory::class.java, response)
             }
-            SymComManager.ContentType.BUFFER_PROTO -> TODO("Not implemented")
+            SymComManager.ContentType.BUFFER_PROTO -> Directory.fromProtoBuf(
+                DirectoryOuterClass.Directory.newBuilder().mergeFrom(
+                ByteArrayInputStream(response.toByteArray())
+            ).build())
             else -> throw Exception("No parser")
         }
     }
@@ -91,7 +96,7 @@ class SerializedActivity : AppCompatActivity() {
                 return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                         "<!DOCTYPE directory SYSTEM \"http://mobile.iict.ch/directory.dtd\">" + os.toString();
             }
-            SymComManager.ContentType.BUFFER_PROTO -> TODO("Not implemented");
+            SymComManager.ContentType.BUFFER_PROTO -> directory.toProtoBuf()
             else -> throw Exception("Content type invalid")
         }
     }
