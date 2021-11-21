@@ -50,8 +50,6 @@ class CompressedActivity : AppCompatActivity() {
                 gson.toJson(requestTextInput.text.toString()),
                 true
             )
-
-
         }
 
         sendUncompressedBtn.setOnClickListener {

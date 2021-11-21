@@ -37,8 +37,13 @@ class SerializedActivity : AppCompatActivity() {
                 size: Int
             ) {
                  val responseDir = parseResponse(response, contentType)
-                responseTxtView.text =
-                    "Nom de la personne: "+ responseDir.directory[0].name;
+                val builder = StringBuilder()
+                builder.append("nom de la personne ")
+                        .append(responseDir.directory[0].name)
+
+                responseTxtView.text = builder.toString()
+
+
             }
         })
 
@@ -92,7 +97,6 @@ class SerializedActivity : AppCompatActivity() {
             SymComManager.ContentType.XML -> {
                 val os = ByteArrayOutputStream();
                 xmlSerializer.write(directory, os);
-                // TODO pas le temps de m'amuser a trouver comment faire pour ajouter ça <?xml ...
                 return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                         "<!DOCTYPE directory SYSTEM \"http://mobile.iict.ch/directory.dtd\">" + os.toString();
             }

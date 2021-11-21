@@ -20,8 +20,13 @@ class DeferredActivity : AppCompatActivity() {
                 size: Int
             ) {
                 val text: String = responseOutput.text.toString()
-                // TODO enelever la suggestion
-                responseOutput.text = text + response + "\n"
+                val builder = StringBuilder()
+                builder.append(text)
+                    .append(" ")
+                    .append(response)
+                    .append("\n")
+                responseOutput.text = builder.toString()
+
             }
         })
         sendBtn.setOnClickListener {

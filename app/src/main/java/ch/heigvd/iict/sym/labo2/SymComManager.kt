@@ -20,7 +20,9 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
         Timer().schedule(object : TimerTask() {
             override fun run() {
 
-                // TODO A tester
+                /*
+                    Note : pas de gestion de concurrence ici.
+                 */
                 if (hasPendingRequest()) {
                     // copy pending request
                     val reqToSend = pendingRequests.toMutableList();
@@ -114,6 +116,7 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
 
 
                 } catch (unknownHostEx: UnknownHostException) {
+                    println("Hote pas atteignable")
                     pendingRequests.add(Request(url, contentType, request))
                 } finally {
                     httpConnection.disconnect()

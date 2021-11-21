@@ -54,7 +54,10 @@ class GraphQLActivity : AppCompatActivity() {
                 val authors: Array<Author> =
                     gson.fromJson(findAllAuthors, Array<Author>::class.java)
                 authorsList.addAll(authors)
-                // TODO utiliser des stream pour créer une array de string en utilisant l'attribut nom
+                /*
+                    Note : il serait intéressant d'utiliser un stream pour créer le array
+                    en utilisant l'attribut nom.
+                 */
                 for (author in authors) {
                     authorsNamesList.add(author.name);
                 }
@@ -79,7 +82,9 @@ class GraphQLActivity : AppCompatActivity() {
                             books[0].title + " " + books.size
                 )
                 booksList.clear()
-                // TODO utiliser des stream
+                /*
+                    Note : un stream serait également intéressant ici.
+                 */
                 for (book in books) {
                     booksList.add(book.title);
                     Log.d(
