@@ -16,7 +16,7 @@ class DirectoryUtils {
          * Genère une liste de Person
          */
         fun generatePeople(name: String): MutableList<Person> {
-            val person1 = Person(name, "Frank", "tamer", generatePhone())
+            val person1 = Person(name, "Frank", "Letest", generatePhone())
             return mutableListOf(person1)
         }
 
